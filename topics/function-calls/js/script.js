@@ -2,14 +2,13 @@
  * Function Calls
  * Nic Trnka
  * 
- * HOW EMBARRASSING! I HAVE NO DESCRIPTION OF MY PROJECT!
- * PLEASE REMOVE A GRADE FROM MY WORK IF IT'S GRADED!
+ * paper 
  */
 
 "use strict";
 
 /**
- * OH LOOK I DIDN'T DESCRIBE SETUP!!
+ * creates a 640x480 canvas for our masterpiece
 */
 function setup() {
 createCanvas(640, 480);
@@ -17,9 +16,11 @@ createCanvas(640, 480);
 
 
 /**
- * OOPS I DIDN'T DESCRIBE WHAT MY DRAW DOES!
+ * Draws a blank piece of paper on a pink background
 */
 function draw() {
+// pink background
 background(255, 100, 100);
+// white rectangle
 rect(200, 80, 240, 320);
 }

@@ -12,6 +12,8 @@ let ego = {
     x: 200,
     y: 200,
     size: 1,
+    minSize: 0,
+    maxSize: 200,
     fill: 200
 };
 
@@ -32,8 +34,12 @@ function draw() {
     // Update the ego
     // Fill gets darker, symbolizing the negative energy
     ego.fill = ego.fill - 0.5;
+    //constrain the ego color
+    ego.fill = constrain(ego.fill, 0, 255);
     // Size gets bigger, symbolizing taking up emotional space
     ego.size = ego.size + 1;
+    //constrain ego size
+    ego.size = constrain(ego.size, ego.minSize, ego.maxSize);
 
     // Draw the ego
     push();

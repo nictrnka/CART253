@@ -65,6 +65,7 @@ let grass = {
 }
 
 let sky = {
+    //switch to array?
     stripes: {
         one: {
             r: 152,
@@ -148,9 +149,34 @@ let moon = {
 }
 
 let stars = {
-    r: 0,
-    g: 0,
-    b: 0
+    r: 255,
+    g: 243,
+    b: 184,
+
+    width: 15,
+    height: 30,
+
+    pointWidth: 25,
+    pointHeight: 38,
+
+    offset: {
+        x: 12,
+        y: 18
+    },
+
+    //switch to array?
+    one: {
+        x: 100,
+        y: 187
+    },
+    two: {
+        x: 250,
+        y: 111
+    },
+    three: {
+        x: 510,
+        y: 262
+    }
 }
 
 let fence = {
@@ -176,6 +202,8 @@ function draw() {
     drawGrass();
 
     drawMoon();
+
+    drawStars();
 }
 
 
@@ -292,5 +320,49 @@ function drawCraters() {
     ellipse(moon.x + moon.crater.two.offset.x, moon.y + moon.crater.two.offset.y, moon.crater.two.size);
 
     pop();
+
+}
+
+function drawStars() {
+    //draw rectangle stars
+    push();
+    fill(stars.r, stars.g, stars.b);
+    noStroke();
+    rectMode(CENTER);
+    rect(stars.one.x, stars.one.y, stars.width, stars.height);
+    rect(stars.two.x, stars.two.y, stars.width, stars.height);
+    rect(stars.three.x, stars.three.y, stars.width, stars.height);
+    pop();
+
+    //draw points on star one
+    push();
+    fill(sky.stripes.three.r, sky.stripes.three.g, sky.stripes.three.b);
+    noStroke();
+    ellipse(stars.one.x + stars.offset.x, stars.one.y + stars.offset.y, stars.pointWidth, stars.pointHeight);
+    ellipse(stars.one.x - stars.offset.x, stars.one.y + stars.offset.y, stars.pointWidth, stars.pointHeight);
+    ellipse(stars.one.x + stars.offset.x, stars.one.y - stars.offset.y, stars.pointWidth, stars.pointHeight);
+    ellipse(stars.one.x - stars.offset.x, stars.one.y - stars.offset.y, stars.pointWidth, stars.pointHeight);
+    pop();
+
+    //draw points on star two
+    push();
+    fill(sky.stripes.two.r, sky.stripes.two.g, sky.stripes.two.b);
+    noStroke();
+    ellipse(stars.two.x + stars.offset.x, stars.two.y + stars.offset.y, stars.pointWidth, stars.pointHeight);
+    ellipse(stars.two.x - stars.offset.x, stars.two.y + stars.offset.y, stars.pointWidth, stars.pointHeight);
+    ellipse(stars.two.x + stars.offset.x, stars.two.y - stars.offset.y, stars.pointWidth, stars.pointHeight);
+    ellipse(stars.two.x - stars.offset.x, stars.two.y - stars.offset.y, stars.pointWidth, stars.pointHeight);
+    pop();
+
+    //draw points on star three
+    push();
+    fill(sky.stripes.four.r, sky.stripes.four.g, sky.stripes.four.b);
+    noStroke();
+    ellipse(stars.three.x + stars.offset.x, stars.three.y + stars.offset.y, stars.pointWidth, stars.pointHeight);
+    ellipse(stars.three.x - stars.offset.x, stars.three.y + stars.offset.y, stars.pointWidth, stars.pointHeight);
+    ellipse(stars.three.x + stars.offset.x, stars.three.y - stars.offset.y, stars.pointWidth, stars.pointHeight);
+    ellipse(stars.three.x - stars.offset.x, stars.three.y - stars.offset.y, stars.pointWidth, stars.pointHeight);
+    pop();
+
 
 }

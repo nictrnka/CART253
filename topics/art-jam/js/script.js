@@ -308,12 +308,13 @@ function drawFence() {
     push();
     fill(fence.post.r, fence.post.g, fence.post.b);
     noStroke();
+
     //draw fence posts from left to right
     rect(195, 403, 4, 50);
-    rect(220, 390, 6, 50);
-    rect(255, 386, 9, 50);
-    rect(310, 405, 12, 60);
-    rect(370, 490, 20, 150);
+    rect(220, 392, 6, 50);
+    rect(257, 387, 7, 38);
+    rect(310, 405, 13, 67);
+    rect(370, 490, 22, 150);
     pop();
 
 
@@ -321,7 +322,7 @@ function drawFence() {
     push();
     fill(grass.r, grass.g, grass.b);
     noStroke();
-    arc(grass.x, grass.y, grass.width, grass.height, PI, -1.2,);
+    arc(grass.x, grass.y, grass.width, grass.height, PI, -1.4);
     pop();
 
 }

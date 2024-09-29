@@ -111,7 +111,7 @@ let moon = {
     b: 234,
 
     x: 510,
-    y: 110,
+    y: 113,
 
     size: 100,
 
@@ -171,7 +171,7 @@ let stars = {
     },
     two: {
         x: 250,
-        y: 111
+        y: 112
     },
     three: {
         x: 510,
@@ -180,7 +180,20 @@ let stars = {
 }
 
 let fence = {
-    fill: 0
+    r: 205,
+    g: 149,
+    b: 117,
+
+    x: 250,
+    y: 450,
+    width: 400,
+    height: 200,
+
+    post: {
+        r: 166,
+        g: 123,
+        b: 91,
+    }
 }
 
 
@@ -200,10 +213,15 @@ function draw() {
     drawSky();
 
     drawGrass();
+    drawFence();
+
+
 
     drawMoon();
 
     drawStars();
+
+
 }
 
 
@@ -265,6 +283,45 @@ function drawSky() {
     fill(sky.stripes.seven.r, sky.stripes.seven.g, sky.stripes.seven.b)
 
     rect(0, height - (height / 8) * 2, width, height / 8);
+    pop();
+
+}
+
+function drawFence() {
+    // push();
+    // fill(0, 0);
+    // strokeWeight(15);
+    // stroke(fence.r, fence.g, fence.b);
+    // arc(275, 430, 400, 100, PI + 0.5, -0.2, OPEN);
+    // pop();
+
+    //draw main fence beam
+    push();
+    fill(0, 0);
+    strokeWeight(15);
+    stroke(fence.r, fence.g, fence.b);
+    arc(250, 700, 300, 600, PI, 0, OPEN);
+    arc(255.5, 700, 320, 600, PI, 0, OPEN);
+    pop();
+
+    // draw fence posts
+    push();
+    fill(fence.post.r, fence.post.g, fence.post.b);
+    noStroke();
+    //draw fence posts from left to right
+    rect(195, 403, 4, 50);
+    rect(220, 390, 6, 50);
+    rect(255, 386, 9, 50);
+    rect(310, 405, 12, 60);
+    rect(370, 490, 20, 150);
+    pop();
+
+
+    //cover part of the fence with grass
+    push();
+    fill(grass.r, grass.g, grass.b);
+    noStroke();
+    arc(grass.x, grass.y, grass.width, grass.height, PI, -1.2,);
     pop();
 
 }
@@ -364,5 +421,6 @@ function drawStars() {
     ellipse(stars.three.x - stars.offset.x, stars.three.y - stars.offset.y, stars.pointWidth, stars.pointHeight);
     pop();
 
-
 }
+
+

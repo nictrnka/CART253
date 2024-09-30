@@ -11,11 +11,11 @@
 let sheep = {
     count: 0,
 
-    startingPosX: 0,
-    startingPosY: -50,
+    startingPosX: 300,
+    startingPosY: 350,
 
-    x: undefined,
-    y: undefined,
+    x: 100,
+    y: 450,
 
     velocity: {
         x: undefined,
@@ -23,29 +23,37 @@ let sheep = {
     },
 
     fur: {
-        fill: 0,
+        r: 253,
+        g: 253,
+        b: 253,
+
         size: 50,
         x: undefined,
         y: undefined
     },
 
-    hoof: {
+    legs: {
         fill: 0,
-        size: 50,
+        width: 7,
+        height: 20,
         x: undefined,
         y: undefined
     },
 
-    skin: {
-        fill: 0,
-        size: 50,
-        x: undefined,
-        y: undefined
+    head: {
+        r: 188,
+        g: 143,
+        b: 143,
+        width: 40,
+        height: 30,
+        x: 30,
+        y: 0
     },
 
     eyes: {
         fill: 0,
-        size: 5,
+        width: 5,
+        height: 10,
         x: undefined,
         y: undefined
     }
@@ -221,6 +229,8 @@ function draw() {
 
     drawStars();
 
+    drawSheep();
+
 
 }
 
@@ -288,12 +298,6 @@ function drawSky() {
 }
 
 function drawFence() {
-    // push();
-    // fill(0, 0);
-    // strokeWeight(15);
-    // stroke(fence.r, fence.g, fence.b);
-    // arc(275, 430, 400, 100, PI + 0.5, -0.2, OPEN);
-    // pop();
 
     //draw main fence beam
     push();
@@ -421,6 +425,86 @@ function drawStars() {
     ellipse(stars.three.x + stars.offset.x, stars.three.y - stars.offset.y, stars.pointWidth, stars.pointHeight);
     ellipse(stars.three.x - stars.offset.x, stars.three.y - stars.offset.y, stars.pointWidth, stars.pointHeight);
     pop();
+
+}
+
+function drawSheep() {
+
+    //draw legs
+    push();
+    fill(sheep.head.r, sheep.head.g, sheep.head.b);
+    noStroke();
+    rect(sheep.x - 28, sheep.y + 25, sheep.legs.width, sheep.legs.height);
+    rect(sheep.x - 15, sheep.y + 25, sheep.legs.width, sheep.legs.height);
+    rect(sheep.x + 7, sheep.y + 25, sheep.legs.width, sheep.legs.height);
+    rect(sheep.x + 21, sheep.y + 25, sheep.legs.width, sheep.legs.height);
+    pop();
+
+    //draw hooves
+    push();
+    fill(0);
+    noStroke();
+    rect(sheep.x - 28, sheep.y + 45, sheep.legs.width, 3);
+    rect(sheep.x - 15, sheep.y + 45, sheep.legs.width, 3);
+    rect(sheep.x + 7, sheep.y + 45, sheep.legs.width, 3);
+    rect(sheep.x + 21, sheep.y + 45, sheep.legs.width, 3);
+
+    pop();
+
+    //draw fur
+    push();
+    fill(sheep.fur.r, sheep.fur.g, sheep.fur.b);
+    noStroke();
+
+    ellipse(sheep.x, sheep.y, sheep.fur.size);
+    ellipse(sheep.x, sheep.y - 25, sheep.fur.size);
+    ellipse(sheep.x + 20, sheep.y - 20, sheep.fur.size);
+    ellipse(sheep.x - 30, sheep.y, sheep.fur.size);
+    ellipse(sheep.x - 20, sheep.y - 20, sheep.fur.size);
+    ellipse(sheep.x + 30, sheep.y, sheep.fur.size);
+    ellipse(sheep.x - 15, sheep.y + 15, sheep.fur.size);
+    ellipse(sheep.x + 15, sheep.y + 15, sheep.fur.size);
+
+    //draw tail
+    arc(sheep.x - 50, sheep.y - 8, 20, 20, 0, PI);
+    pop();
+
+    //draw face
+    push();
+    fill(sheep.head.r, sheep.head.g, sheep.head.b);
+    noStroke();
+    ellipse(sheep.x + sheep.head.x, sheep.y + sheep.head.y, sheep.head.width, sheep.head.height);
+
+    //draw ears
+    arc(sheep.x + 8, sheep.y - 8, 15, 13, -0.3, PI - 0.3);
+    arc(sheep.x + 52, sheep.y - 8, 15, 13, +0.3, PI + 0.3);
+    pop();
+
+    //draw mouth
+    push();
+    fill(0, 0);
+    stroke(0);
+    strokeWeight(0.5);
+    arc(sheep.x + 34, sheep.y + 3, 8, 8, 0, PI, OPEN);
+    arc(sheep.x + 26, sheep.y + 3, 8, 8, 0, PI, OPEN);
+    pop();
+
+    //draw eyes
+    push();
+    fill(0);
+    noStroke();
+    ellipse(sheep.x + 20, sheep.y - 5, sheep.eyes.width, sheep.eyes.height);
+    ellipse(sheep.x + 40, sheep.y - 5, sheep.eyes.width, sheep.eyes.height);
+
+    //draw nose
+    ellipse(sheep.x + 30, sheep.y, 8, 4);
+    ellipse(sheep.x + 30, sheep.y + 1, 5, 5);
+    pop();
+
+    //draw mouth
+
+
+
 
 }
 

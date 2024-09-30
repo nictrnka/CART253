@@ -8,6 +8,8 @@
 
 "use strict";
 
+let highscore = 1;
+
 let sheep = {
     count: 1,
     counted: false,
@@ -255,6 +257,10 @@ function draw() {
 
         if (sheep.x < 600) {
             sheep.count = 0;
+
+        }
+        else if (sheep.count >= highscore) {
+            highscore += 1;
         }
 
         //reset sheep
@@ -265,8 +271,9 @@ function draw() {
         sheep.jumpSpeedY = sheep.originalJumpSpeedY;
         sheep.jumpSpeedX = sheep.originalJumpSpeedX;
         sheep.jumpCounter = 0;
-        sheep.counted = false;
         sheep.count += 1;
+
+
 
 
         //randomize sheep speed
@@ -326,7 +333,7 @@ function draw() {
 
     drawSheep();
 
-    drawCount();
+    drawText();
 
 
 }
@@ -609,13 +616,22 @@ function drawSheep() {
 
 }
 
-function drawCount() {
+function drawText() {
 
     push();
     fill(0);
     textSize(20);
-    //text(sheep.count, 524, 120)
     text(sheep.count, sheep.x - 30, sheep.y)
+
+    pop();
+
+    push();
+    fill(sky.stripes.two.r, sky.stripes.two.g, sky.stripes.two.b)
+    textSize(20);
+    text("most sheep counted:", 15, 30)
+    text(highscore, 206, 30)
+    text("press any key to jump", 391, 30)
+    text("you are so sleepy...", 225, 200)
     pop();
 }
 

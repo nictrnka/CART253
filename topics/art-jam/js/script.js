@@ -9,7 +9,9 @@
 "use strict";
 
 let sheep = {
-    count: 0,
+    count: 1,
+    counted: false,
+
     speedX: 1,
     minSpeed: 1,
     maxSpeed: 5,
@@ -30,10 +32,10 @@ let sheep = {
     falling: false,
 
     startingPosX: -70,
-    startingPosY: 450,
+    startingPosY: 500,
 
-    x: 100,
-    y: 450,
+    x: -70,
+    y: 500,
 
     velocity: {
         x: undefined,
@@ -249,17 +251,23 @@ function draw() {
 
 
     //check collision with fence & reset sheep
-    if (sheep.x > 257 && sheep.x < 370 && sheep.y >= 355 || sheep.x > width) {
-        sheep.x = sheep.startingPosX;
-        sheep.y = sheep.startingPosY;
+    if (sheep.x > 257 && sheep.x < 370 && sheep.y >= 355 || sheep.x > 650) {
+
+        if (sheep.x < 600) {
+            sheep.count = 0;
+        }
 
         //reset sheep
+        sheep.x = sheep.startingPosX;
+        sheep.y = sheep.startingPosY;
         sheep.jumping = false;
         sheep.falling = false;
         sheep.jumpSpeedY = sheep.originalJumpSpeedY;
         sheep.jumpSpeedX = sheep.originalJumpSpeedX;
         sheep.jumpCounter = 0;
-        sheep.count = 0;
+        sheep.counted = false;
+        sheep.count += 1;
+
 
         //randomize sheep speed
         sheep.speedX = random(sheep.minSpeed, sheep.maxSpeed);
@@ -274,7 +282,7 @@ function draw() {
             sheep.jumpCounter = 0;
             sheep.jumping = false;
             sheep.falling = false;
-            sheep.y = sheep.startingPosY;
+
         }
 
         if (sheep.falling) {
@@ -294,7 +302,11 @@ function draw() {
             sheep.jumpSpeedX = constrain(sheep.jumpSpeedX, sheep.originalJumpSpeedX, sheep.maxJumpSpeedX);
         }
 
-        console.log(sheep.jumpSpeedX);
+        // if (sheep.x > 300 && !sheep.counted) {
+        //     sheep.counted = true;
+        //     sheep.count += 1;
+        // }
+
         sheep.x += sheep.jumpSpeedX;
         sheep.jumpCounter += 1;
 
@@ -303,20 +315,27 @@ function draw() {
     else {
         sheep.y
         sheep.x += sheep.speedX;
+        if (sheep.x < 355) {
+            sheep.y -= 0.2 * sheep.speedX;
+        }
+        else {
+            sheep.y += 0.65;
+        }
+
     }
 
-    //sheep.y = mouseY;
     drawSheep();
+
+    drawCount();
 
 
 }
 
 function keyPressed() {
-    //if (keyCode === 32) {
+
 
     sheep.jumping = true;
-    console.log(sheep.jumping);
-    //}
+
 }
 
 
@@ -423,6 +442,7 @@ function drawGrass() {
     noStroke();
 
     ellipse(grass.x, grass.y, grass.width, grass.height);
+
     pop();
 
 }
@@ -586,11 +606,17 @@ function drawSheep() {
     ellipse(sheep.x + 30, sheep.y + 1, 5, 5);
     pop();
 
-    //draw mouth
 
+}
 
+function drawCount() {
 
-
+    push();
+    fill(0);
+    textSize(20);
+    //text(sheep.count, 524, 120)
+    text(sheep.count, sheep.x - 30, sheep.y)
+    pop();
 }
 
 

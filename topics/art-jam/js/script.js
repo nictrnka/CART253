@@ -58,8 +58,9 @@ let sheep = {
         fill: 0,
         width: 7,
         height: 20,
-        x: undefined,
-        y: undefined
+        frontLegHeight: 25,
+        backLegHeight: 25
+
     },
 
     head: {
@@ -299,6 +300,9 @@ function draw() {
 
             sheep.jumpSpeedX -= 0.25;
             sheep.jumpSpeedX = constrain(sheep.jumpSpeedX, sheep.originalJumpSpeedX, sheep.maxJumpSpeedX);
+
+            sheep.legs.frontLegHeight = 27;
+            sheep.legs.backLegHeight = 20;
         }
         else {
             sheep.jumpSpeedY -= 0.15;
@@ -307,6 +311,9 @@ function draw() {
 
             sheep.jumpSpeedX += 0.25;
             sheep.jumpSpeedX = constrain(sheep.jumpSpeedX, sheep.originalJumpSpeedX, sheep.maxJumpSpeedX);
+
+            sheep.legs.frontLegHeight = 20;
+            sheep.legs.backLegHeight = 30;
         }
 
         // if (sheep.x > 300 && !sheep.counted) {
@@ -328,6 +335,9 @@ function draw() {
         else {
             sheep.y += 0.65;
         }
+
+        sheep.legs.frontLegHeight = 25;
+        sheep.legs.backLegHeight = 25;
 
     }
 
@@ -546,20 +556,20 @@ function drawSheep() {
     push();
     fill(sheep.head.r, sheep.head.g, sheep.head.b);
     noStroke();
-    rect(sheep.x - 28, sheep.y + 25, sheep.legs.width, sheep.legs.height);
-    rect(sheep.x - 15, sheep.y + 25, sheep.legs.width, sheep.legs.height);
-    rect(sheep.x + 7, sheep.y + 25, sheep.legs.width, sheep.legs.height);
-    rect(sheep.x + 21, sheep.y + 25, sheep.legs.width, sheep.legs.height);
+    rect(sheep.x - 28, sheep.y + sheep.legs.backLegHeight, sheep.legs.width, sheep.legs.height);
+    rect(sheep.x - 15, sheep.y + sheep.legs.backLegHeight, sheep.legs.width, sheep.legs.height);
+    rect(sheep.x + 7, sheep.y + sheep.legs.frontLegHeight, sheep.legs.width, sheep.legs.height);
+    rect(sheep.x + 21, sheep.y + sheep.legs.frontLegHeight, sheep.legs.width, sheep.legs.height);
     pop();
 
     //draw hooves
     push();
     fill(0);
     noStroke();
-    rect(sheep.x - 28, sheep.y + 45, sheep.legs.width, 3);
-    rect(sheep.x - 15, sheep.y + 45, sheep.legs.width, 3);
-    rect(sheep.x + 7, sheep.y + 45, sheep.legs.width, 3);
-    rect(sheep.x + 21, sheep.y + 45, sheep.legs.width, 3);
+    rect(sheep.x - 28, sheep.y + sheep.legs.backLegHeight + 20, sheep.legs.width, 3);
+    rect(sheep.x - 15, sheep.y + sheep.legs.backLegHeight + 20, sheep.legs.width, 3);
+    rect(sheep.x + 7, sheep.y + sheep.legs.frontLegHeight + 20, sheep.legs.width, 3);
+    rect(sheep.x + 21, sheep.y + sheep.legs.frontLegHeight + 20, sheep.legs.width, 3);
 
     pop();
 

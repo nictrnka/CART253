@@ -10,9 +10,27 @@
 
 let sheep = {
     count: 0,
+    speedX: 1,
+    minSpeed: 1,
+    maxSpeed: 5,
 
-    startingPosX: 300,
-    startingPosY: 350,
+    jumping: false,
+    jumpTime: 60,
+    jumpCounter: 0,
+
+    jumpSpeedY: 7,
+    originalJumpSpeedY: 7,
+    minJumpSpeedY: 0,
+    maxJumpSpeedY: 100,
+
+    jumpSpeedX: 0.4,
+    originalJumpSpeedX: 0.4,
+    maxJumpSpeedX: 7,
+
+    falling: false,
+
+    startingPosX: -70,
+    startingPosY: 450,
 
     x: 100,
     y: 450,
@@ -229,9 +247,76 @@ function draw() {
 
     drawStars();
 
+
+    //check collision with fence & reset sheep
+    if (sheep.x > 257 && sheep.x < 370 && sheep.y >= 355 || sheep.x > width) {
+        sheep.x = sheep.startingPosX;
+        sheep.y = sheep.startingPosY;
+
+        //reset sheep
+        sheep.jumping = false;
+        sheep.falling = false;
+        sheep.jumpSpeedY = sheep.originalJumpSpeedY;
+        sheep.jumpSpeedX = sheep.originalJumpSpeedX;
+        sheep.jumpCounter = 0;
+        sheep.count = 0;
+
+        //randomize sheep speed
+        sheep.speedX = random(sheep.minSpeed, sheep.maxSpeed);
+
+    }
+    else if (sheep.jumping) {
+
+        if (sheep.jumpCounter === sheep.jumpTime / 2) {
+            sheep.falling = true;
+        }
+        else if (sheep.jumpCounter === sheep.jumpTime) {
+            sheep.jumpCounter = 0;
+            sheep.jumping = false;
+            sheep.falling = false;
+            sheep.y = sheep.startingPosY;
+        }
+
+        if (sheep.falling) {
+            sheep.jumpSpeedY += 0.15;
+            sheep.jumpSpeedY = constrain(sheep.jumpSpeedY, sheep.minJumpSpeedY, sheep.maxJumpSpeedY);
+            sheep.y += sheep.jumpSpeedY;
+
+            sheep.jumpSpeedX -= 0.25;
+            sheep.jumpSpeedX = constrain(sheep.jumpSpeedX, sheep.originalJumpSpeedX, sheep.maxJumpSpeedX);
+        }
+        else {
+            sheep.jumpSpeedY -= 0.15;
+            sheep.jumpSpeedY = constrain(sheep.jumpSpeedY, sheep.minJumpSpeedY, sheep.maxJumpSpeedY);
+            sheep.y -= sheep.jumpSpeedY;
+
+            sheep.jumpSpeedX += 0.25;
+            sheep.jumpSpeedX = constrain(sheep.jumpSpeedX, sheep.originalJumpSpeedX, sheep.maxJumpSpeedX);
+        }
+
+        console.log(sheep.jumpSpeedX);
+        sheep.x += sheep.jumpSpeedX;
+        sheep.jumpCounter += 1;
+
+
+    }
+    else {
+        sheep.y
+        sheep.x += sheep.speedX;
+    }
+
+    //sheep.y = mouseY;
     drawSheep();
 
 
+}
+
+function keyPressed() {
+    //if (keyCode === 32) {
+
+    sheep.jumping = true;
+    console.log(sheep.jumping);
+    //}
 }
 
 

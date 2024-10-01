@@ -1,26 +1,43 @@
 /**
- * ART JAM
+ * COUNTING SHEEP
  * Nic Trnka
  * 
- * HOW EMBARRASSING! I HAVE NO DESCRIPTION OF MY PROJECT!
- * PLEASE REMOVE A GRADE FROM MY WORK IF IT'S GRADED!
+ * You can't seem to get to sleep... try counting sheep! 
+ * 
+ * Infinite sheep are trying and get past a fence, 
+ * And you have to time your mouse click on the sheep and make it jump over the fence.
+ * 
+ * If the sheep hits the fence you are jolted awake and the game is restarted,
+ * But if it makes it past, the sheep count increases.
+ * 
+ * The amount of sheep that you have successfully counted makes you sleepier and sleepier,
+ * So the scene slowly gets darker with each sheep.
+ * 
  */
 
 "use strict";
 
 let highscore = 1;
+let count = 1;
 
 let sheep = {
-    count: 1,
-    counted: false,
 
-    speedX: 1,
-    minSpeed: 1,
-    maxSpeed: 5,
+    startingPosX: -70,
+    startingPosY: 500,
 
+    x: -70,
+    y: 500,
+
+    speedX: 2,
+    minSpeed: 2,
+    maxSpeed: 6,
+
+    //jump variables
     jumping: false,
+    falling: false,
     jumpTime: 60,
     jumpCounter: 0,
+    hasJumped: false,
 
     jumpSpeedY: 7,
     originalJumpSpeedY: 7,
@@ -31,18 +48,8 @@ let sheep = {
     originalJumpSpeedX: 0.4,
     maxJumpSpeedX: 7,
 
-    falling: false,
-
-    startingPosX: -70,
-    startingPosY: 500,
-
-    x: -70,
-    y: 500,
-
-    velocity: {
-        x: undefined,
-        y: undefined
-    },
+    //approximate size of sheep for clicking on
+    hitBoxSize: 100,
 
     fur: {
         r: 253,
@@ -50,17 +57,14 @@ let sheep = {
         b: 253,
 
         size: 50,
-        x: undefined,
-        y: undefined
     },
 
     legs: {
         fill: 0,
         width: 7,
         height: 20,
-        frontLegHeight: 25,
-        backLegHeight: 25
-
+        frontLegY: 25,
+        backLegY: 25
     },
 
     head: {
@@ -77,10 +81,7 @@ let sheep = {
         fill: 0,
         width: 5,
         height: 10,
-        x: undefined,
-        y: undefined
     }
-
 }
 
 let grass = {
@@ -96,7 +97,7 @@ let grass = {
 }
 
 let sky = {
-    //switch to array?
+    //fills for seven stripes to create a sky gradient
     stripes: {
         one: {
             r: 152,
@@ -153,6 +154,7 @@ let moon = {
     },
 
     crater: {
+        //positions for two different craters
         one: {
             r: 220,
             g: 220,
@@ -195,7 +197,7 @@ let stars = {
         y: 18
     },
 
-    //switch to array?
+    //positions for three different stars
     one: {
         x: 100,
         y: 187
@@ -211,6 +213,7 @@ let stars = {
 }
 
 let fence = {
+    //main beam 
     r: 205,
     g: 149,
     b: 117,
@@ -220,6 +223,7 @@ let fence = {
     width: 400,
     height: 200,
 
+    //all fence posts
     post: {
         r: 166,
         g: 123,
@@ -227,17 +231,25 @@ let fence = {
     }
 }
 
+let darkness = {
+    r: 0,
+    g: 0,
+    b: 0,
+
+    startingDarkness: 0,
+    currentDarkness: 0,
+    maxDarkness: 220
+}
 
 /**
- * OH LOOK I DIDN'T DESCRIBE SETUP!!
+ * Creates Canvas
 */
 function setup() {
     createCanvas(600, 600);
 }
 
-
 /**
- * OOPS I DIDN'T DESCRIBE WHAT MY DRAW DOES!
+ * Draws art, and handles sheep movement and game logic
 */
 function draw() {
 
@@ -246,21 +258,17 @@ function draw() {
     drawGrass();
     drawFence();
 
-
-
     drawMoon();
 
     drawStars();
-
 
     //check collision with fence & reset sheep
     if (sheep.x > 257 && sheep.x < 370 && sheep.y >= 355 || sheep.x > 650) {
 
         if (sheep.x < 600) {
-            sheep.count = 0;
-
+            count = 0;
         }
-        else if (sheep.count >= highscore) {
+        else if (count >= highscore) {
             highscore += 1;
         }
 
@@ -272,28 +280,28 @@ function draw() {
         sheep.jumpSpeedY = sheep.originalJumpSpeedY;
         sheep.jumpSpeedX = sheep.originalJumpSpeedX;
         sheep.jumpCounter = 0;
-        sheep.count += 1;
-
-
-
+        count += 1;
 
         //randomize sheep speed
         sheep.speedX = random(sheep.minSpeed, sheep.maxSpeed);
 
     }
+    //sheep jumping movement
     else if (sheep.jumping) {
 
+        //checks if sheep has reached apex of jump
         if (sheep.jumpCounter === sheep.jumpTime / 2) {
             sheep.falling = true;
         }
+        //checks if sheep has finished jumping
         else if (sheep.jumpCounter === sheep.jumpTime) {
             sheep.jumpCounter = 0;
             sheep.jumping = false;
             sheep.falling = false;
-
         }
-
+        //sheep falling movement
         if (sheep.falling) {
+            //jump speed values change to smooth out the arc of the jump
             sheep.jumpSpeedY += 0.15;
             sheep.jumpSpeedY = constrain(sheep.jumpSpeedY, sheep.minJumpSpeedY, sheep.maxJumpSpeedY);
             sheep.y += sheep.jumpSpeedY;
@@ -301,9 +309,11 @@ function draw() {
             sheep.jumpSpeedX -= 0.25;
             sheep.jumpSpeedX = constrain(sheep.jumpSpeedX, sheep.originalJumpSpeedX, sheep.maxJumpSpeedX);
 
-            sheep.legs.frontLegHeight = 27;
-            sheep.legs.backLegHeight = 20;
+            //move legs to look like falling
+            sheep.legs.frontLegY = 27;
+            sheep.legs.backLegY = 20;
         }
+        //sheep rising movement
         else {
             sheep.jumpSpeedY -= 0.15;
             sheep.jumpSpeedY = constrain(sheep.jumpSpeedY, sheep.minJumpSpeedY, sheep.maxJumpSpeedY);
@@ -312,53 +322,67 @@ function draw() {
             sheep.jumpSpeedX += 0.25;
             sheep.jumpSpeedX = constrain(sheep.jumpSpeedX, sheep.originalJumpSpeedX, sheep.maxJumpSpeedX);
 
-            sheep.legs.frontLegHeight = 20;
-            sheep.legs.backLegHeight = 30;
+            //move legs to look like jumping
+            sheep.legs.frontLegY = 20;
+            sheep.legs.backLegY = 30;
         }
 
-        // if (sheep.x > 300 && !sheep.counted) {
-        //     sheep.counted = true;
-        //     sheep.count += 1;
-        // }
-
         sheep.x += sheep.jumpSpeedX;
+        //counts amount of frames that sheep has been jumping
         sheep.jumpCounter += 1;
-
-
     }
+    //walking movement
     else {
-        sheep.y
+
         sheep.x += sheep.speedX;
+
+        //makes sheep walk up and down hill - before and after fence
         if (sheep.x < 355) {
             sheep.y -= 0.2 * sheep.speedX;
         }
         else {
-            sheep.y += 0.65;
+            sheep.y += 1;
         }
 
-        sheep.legs.frontLegHeight = 25;
-        sheep.legs.backLegHeight = 25;
+        //resets leg positions
+        sheep.legs.frontLegY = 25;
+        sheep.legs.backLegY = 25;
 
     }
 
+    //screen gets darker the more sheep are counted & reaches max darkness at 20 sheep
+    darkness.currentDarkness = map(count, 0, 20, 0, darkness.maxDarkness);
+    darkness.currentDarkness = constrain(darkness.currentDarkness, 0, darkness.maxDarkness);
+
     drawSheep();
-
     drawText();
-
-
-}
-
-function keyPressed() {
-
-
-    sheep.jumping = true;
+    drawDarkness();
 
 }
 
+/**
+ * Makes sheep jump if mouse is clicked while overlapping it
+ */
+function mousePressed() {
+    //checks if mouse is over sheep hitbox
+    const distance = dist(mouseX, mouseY, sheep.x, sheep.y);
+    const mouseIsOverlapping = (distance < sheep.hitBoxSize / 2);
 
+
+    if (mouseIsOverlapping) {
+        sheep.jumping = true;
+
+        //notes that sheep has jumped, to delete instructions
+        if (sheep.hasJumped === false) {
+            sheep.hasJumped = true;
+        }
+    }
+}
+
+/**
+ * Creates a gradient sky made of 7 preset stripe colors
+ */
 function drawSky() {
-    // background(sky.r, sky.g, sky.b);
-
     //draw first (top) stripe
     push();
     noStroke();
@@ -391,7 +415,6 @@ function drawSky() {
     rect(0, height - (height / 8) * 5, width, height / 8);
     pop();
 
-
     //draw fifth stripe
     push();
     noStroke();
@@ -418,6 +441,10 @@ function drawSky() {
 
 }
 
+/**
+ * Draws a fence with 2 arcs for the main beam (to try and add perspective) and 5 rectangles for posts
+ * Covers part of the fence with grass
+ */
 function drawFence() {
 
     //draw main fence beam
@@ -442,7 +469,6 @@ function drawFence() {
     rect(370, 490, 22, 150);
     pop();
 
-
     //cover part of the fence with grass
     push();
     fill(grass.r, grass.g, grass.b);
@@ -452,8 +478,10 @@ function drawFence() {
 
 }
 
+/**
+ * Draws grass
+ */
 function drawGrass() {
-
     push();
     fill(grass.r, grass.g, grass.b);
     noStroke();
@@ -461,10 +489,13 @@ function drawGrass() {
     ellipse(grass.x, grass.y, grass.width, grass.height);
 
     pop();
-
 }
 
+/**
+ * Draws a crescent moon with 2 craters
+ */
 function drawMoon() {
+    //draw moon body
     push();
     fill(moon.r, moon.g, moon.b)
     noStroke();
@@ -472,20 +503,13 @@ function drawMoon() {
     ellipse(moon.x, moon.y, moon.size);
     pop();
 
-    drawMoonShadow();
-    drawCraters();
-}
-
-function drawMoonShadow() {
+    //draw moon shadow
     push();
     fill(sky.stripes.two.r, sky.stripes.two.g, sky.stripes.two.b);
     noStroke();
 
     ellipse(moon.x + moon.shadow.offset, moon.y, moon.shadow.size);
     pop();
-}
-
-function drawCraters() {
 
     //draw first crater
     push();
@@ -493,7 +517,6 @@ function drawCraters() {
     noStroke();
 
     ellipse(moon.x + moon.crater.one.offset.x, moon.y + moon.crater.one.offset.y, moon.crater.one.size);
-
     pop();
 
     //draw second crater
@@ -502,11 +525,12 @@ function drawCraters() {
     noStroke();
 
     ellipse(moon.x + moon.crater.two.offset.x, moon.y + moon.crater.two.offset.y, moon.crater.two.size);
-
     pop();
-
 }
 
+/**
+ * Draws 3 stars with rectangles and creates points by overlapping circles on the corners
+ */
 function drawStars() {
     //draw rectangle stars
     push();
@@ -550,27 +574,29 @@ function drawStars() {
 
 }
 
+/**
+ * Draws a cute sheep out of 1 billion shapes
+ */
 function drawSheep() {
 
     //draw legs
     push();
     fill(sheep.head.r, sheep.head.g, sheep.head.b);
     noStroke();
-    rect(sheep.x - 28, sheep.y + sheep.legs.backLegHeight, sheep.legs.width, sheep.legs.height);
-    rect(sheep.x - 15, sheep.y + sheep.legs.backLegHeight, sheep.legs.width, sheep.legs.height);
-    rect(sheep.x + 7, sheep.y + sheep.legs.frontLegHeight, sheep.legs.width, sheep.legs.height);
-    rect(sheep.x + 21, sheep.y + sheep.legs.frontLegHeight, sheep.legs.width, sheep.legs.height);
+    rect(sheep.x - 28, sheep.y + sheep.legs.backLegY, sheep.legs.width, sheep.legs.height);
+    rect(sheep.x - 15, sheep.y + sheep.legs.backLegY, sheep.legs.width, sheep.legs.height);
+    rect(sheep.x + 7, sheep.y + sheep.legs.frontLegY, sheep.legs.width, sheep.legs.height);
+    rect(sheep.x + 21, sheep.y + sheep.legs.frontLegY, sheep.legs.width, sheep.legs.height);
     pop();
 
     //draw hooves
     push();
     fill(0);
     noStroke();
-    rect(sheep.x - 28, sheep.y + sheep.legs.backLegHeight + 20, sheep.legs.width, 3);
-    rect(sheep.x - 15, sheep.y + sheep.legs.backLegHeight + 20, sheep.legs.width, 3);
-    rect(sheep.x + 7, sheep.y + sheep.legs.frontLegHeight + 20, sheep.legs.width, 3);
-    rect(sheep.x + 21, sheep.y + sheep.legs.frontLegHeight + 20, sheep.legs.width, 3);
-
+    rect(sheep.x - 28, sheep.y + sheep.legs.backLegY + 20, sheep.legs.width, 3);
+    rect(sheep.x - 15, sheep.y + sheep.legs.backLegY + 20, sheep.legs.width, 3);
+    rect(sheep.x + 7, sheep.y + sheep.legs.frontLegY + 20, sheep.legs.width, 3);
+    rect(sheep.x + 21, sheep.y + sheep.legs.frontLegY + 20, sheep.legs.width, 3);
     pop();
 
     //draw fur
@@ -623,25 +649,43 @@ function drawSheep() {
     ellipse(sheep.x + 30, sheep.y + 1, 5, 5);
     pop();
 
-
 }
 
+/**
+ * Writes some text - instructions, high score, current score, and flavor text
+ */
 function drawText() {
-
+    //write sheep count on top of sheep
     push();
     fill(0);
     textSize(20);
-    text(sheep.count, sheep.x - 30, sheep.y)
-
+    text(count, sheep.x - 30, sheep.y)
     pop();
 
+    //write high score & other text
     push();
     fill(sky.stripes.two.r, sky.stripes.two.g, sky.stripes.two.b)
     textSize(20);
     text("most sheep counted:", 15, 30)
     text(highscore, 206, 30)
-    text("press any key to jump", 391, 30)
-    text("you are so sleepy...", 225, 200)
+    text("you are so sleepy...", 225, 175)
+
+    //deletes "how to jump" instructions
+    if (!sheep.hasJumped) {
+        text("click sheep to jump!", 218, 215)
+    }
+    pop();
+}
+
+/**
+ * Changes screen darkness by changing the alpha of a dark rectangle which increases with sheep counted
+ */
+function drawDarkness() {
+
+    push();
+    noStroke();
+    fill(darkness.r, darkness.g, darkness.b, darkness.currentDarkness);
+    rect(0, 0, width, height);
     pop();
 }
 

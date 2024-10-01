@@ -1,21 +1,25 @@
-# Template p5 Project
+# COUNTING SHEEP
 
-Author Name
+Nic Trnka
 
-[View this project online](URL_FOR_THE_RUNNING_PROJECT)
+[View this project online](COUNTING_SHEEP)
 
 ## Description
 
-This description should help the reader understand what the program is, what any controls do, and perhaps what the desired experience it.
+You can't seem to get to sleep... try counting sheep! 
+Infinite sheep are trying and get past a fence, 
+And you have to time your mouse click on the sheep and make it jump over the fence.
+  
+If the sheep hits the fence you are jolted awake and the game is restarted,
+But if it makes it past, the sheep count increases.
+ 
+The amount of sheep that you have successfully counted makes you sleepier and sleepier,
+So the scene slowly gets darker with each sheep.
 
 ## Credits
-
-This bit should describe what tools were used. For example:
 
 This project uses [p5.js](https://p5js.org).
 
 ## Attribution
-
-This bit should attribute any assets or other elements used taken from other sources. For example:
-
-The fish images were sourced from the [Creative Commons image "Georgia Aquarium Fish"](https://search.creativecommons.org/photos/96f6f770-eac1-488c-8abb-16bee7bcc874) by Mike Johnston which is licensed with CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+Mouse overlapping code borrowed from creature loves massage example
+https://pippinbarr.com/cart253/topics/conditionals/conditionals-in-practice-part-2.html

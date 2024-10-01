@@ -398,7 +398,7 @@ function resetSheep() {
  * Makes sheep jump if mouse is clicked while overlapping it
  */
 function mousePressed() {
-    //checks if mouse is over sheep hitbox
+    //checks if mouse is over sheep hitbox (borrowed from creature loves massage example)
     const distance = dist(mouseX, mouseY, sheep.x, sheep.y);
     const mouseIsOverlapping = (distance < sheep.hitBoxSize / 2);
 

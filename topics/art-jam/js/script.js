@@ -26,7 +26,7 @@ let goalPosition = 650;
 let sheep = {
     //spawn position
     startingPosX: -70,
-    startingPosY: 500,
+    startingPosY: 475,
 
     //current position
     x: -70,
@@ -36,7 +36,7 @@ let sheep = {
     speedX: 2,
     minSpeed: 2,
     maxSpeed: 3,
-    walkUpSpeedY: 0.2,
+    walkUpSpeedY: 0.35,
     walkDownSpeedY: 1,
 
     //jump states
@@ -291,13 +291,6 @@ function draw() {
     //check collision with fence
     if (sheep.x > fence.left && sheep.x < fence.right && sheep.y >= fence.top || sheep.x > goalPosition) {
 
-        if (sheep.x < width) {
-            count = 1;
-        }
-        else if (count >= highscore) {
-            highscore += 1;
-        }
-
         resetSheep();
 
     }
@@ -316,6 +309,10 @@ function draw() {
 
 }
 
+/**
+ * Sheep jumping using acceleration and a timer to create a smooth jump.
+ * Animates legs to look like a jump
+*/
 function sheepJump() {
 
     //checks if sheep has reached apex of jump
@@ -362,6 +359,9 @@ function sheepJump() {
     sheep.jumpCounter += 1;
 }
 
+/**
+ * Makes sheep walk!
+*/
 function sheepWalk() {
 
     sheep.x += sheep.speedX;
@@ -379,7 +379,24 @@ function sheepWalk() {
     sheep.legs.backLegY = sheep.legs.walkPosition;
 }
 
+/**
+ * Respawns the sheep and handles score and high score
+*/
 function resetSheep() {
+
+    //score keeping
+    if (sheep.x < width) {
+        count = 1;
+    }
+    else {
+        count += 1;
+
+        if (count >= highscore) {
+
+            highscore += 1;
+        }
+    }
+
     //reset sheep
     sheep.x = sheep.startingPosX;
     sheep.y = sheep.startingPosY;
@@ -388,7 +405,6 @@ function resetSheep() {
     sheep.jumpSpeedY = sheep.originalJumpSpeedY;
     sheep.jumpSpeedX = sheep.originalJumpSpeedX;
     sheep.jumpCounter = 0;
-    count += 1;
 
     //randomize sheep speed
     sheep.speedX = random(sheep.minSpeed, sheep.maxSpeed);
@@ -398,7 +414,7 @@ function resetSheep() {
  * Makes sheep jump if mouse is clicked while overlapping it
  */
 function mousePressed() {
-    //checks if mouse is over sheep hitbox (borrowed from creature loves massage example)
+    //checks if mouse is over sheep hitbox (borrowed from creature loves massage)
     const distance = dist(mouseX, mouseY, sheep.x, sheep.y);
     const mouseIsOverlapping = (distance < sheep.hitBoxSize / 2);
 

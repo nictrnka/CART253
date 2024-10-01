@@ -44,3 +44,24 @@ function draw() {
     ellipse(ball.x, ball.y, ball.size);
     pop();
 }
+/**
+ * Change the colour of the ball
+ */
+function keyPressed(event) {
+    if (event.keyCode === 82) {
+        ball.fill = ball.fills.red;
+    }
+    else if (event.keyCode === 66) {
+        ball.fill = ball.fills.blue;
+    }
+}
+
+/**
+ * Handle keyreleased:
+ * - R or B = Set the ball back to default
+ */
+function keyReleased(event) {
+    if (event.keyCode === 82 || event.keyCode === 66) {
+        ball.fill = ball.fills.white;
+    }
+}

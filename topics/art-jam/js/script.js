@@ -18,34 +18,51 @@
 "use strict";
 
 let highscore = 1;
+//current score
 let count = 1;
 
-let sheep = {
+let goalPosition = 650;
 
+let sheep = {
+    //spawn position
     startingPosX: -70,
     startingPosY: 500,
 
+    //current position
     x: -70,
     y: 500,
 
+    //walking variables
     speedX: 2,
     minSpeed: 2,
-    maxSpeed: 6,
+    maxSpeed: 3,
+    walkUpSpeedY: 0.2,
+    walkDownSpeedY: 1,
 
-    //jump variables
+    //jump states
     jumping: false,
     falling: false,
+
+    //duration of jump
     jumpTime: 60,
     jumpCounter: 0,
+
+    //one time bool for deleting instructions
     hasJumped: false,
 
+    //jump speed variables
     jumpSpeedY: 7,
-    originalJumpSpeedY: 7,
-    minJumpSpeedY: 0,
-    maxJumpSpeedY: 100,
-
     jumpSpeedX: 0.4,
+    jumpAccelerationY: 0.15,
+    jumpAccelerationX: 0.25,
+
+    //stores speed for beginning of jump
+    originalJumpSpeedY: 7,
     originalJumpSpeedX: 0.4,
+
+    //for constrain
+    minJumpSpeedY: 0,
+    maxJumpSpeedY: 7,
     maxJumpSpeedX: 7,
 
     //approximate size of sheep for clicking on
@@ -64,7 +81,13 @@ let sheep = {
         width: 7,
         height: 20,
         frontLegY: 25,
-        backLegY: 25
+        backLegY: 25,
+
+        //leg placement (jump vs walk)
+        walkPosition: 25,
+        highLegPosition: 20,
+        lowLegPosition: 27,
+
     },
 
     head: {
@@ -218,10 +241,16 @@ let fence = {
     g: 149,
     b: 117,
 
+    //arc variables
     x: 250,
     y: 450,
     width: 400,
     height: 200,
+
+    //collision points
+    left: 257,
+    right: 370,
+    top: 355,
 
     //all fence posts
     post: {
@@ -234,7 +263,7 @@ let fence = {
 let darkness = {
     r: 0,
     g: 0,
-    b: 0,
+    b: 128,
 
     startingDarkness: 0,
     currentDarkness: 0,
@@ -252,112 +281,117 @@ function setup() {
  * Draws art, and handles sheep movement and game logic
 */
 function draw() {
-
+    //draws background
     drawSky();
-
     drawGrass();
     drawFence();
-
     drawMoon();
-
     drawStars();
 
-    //check collision with fence & reset sheep
-    if (sheep.x > 257 && sheep.x < 370 && sheep.y >= 355 || sheep.x > 650) {
+    //check collision with fence
+    if (sheep.x > fence.left && sheep.x < fence.right && sheep.y >= fence.top || sheep.x > goalPosition) {
 
-        if (sheep.x < 600) {
-            count = 0;
+        if (sheep.x < width) {
+            count = 1;
         }
         else if (count >= highscore) {
             highscore += 1;
         }
 
-        //reset sheep
-        sheep.x = sheep.startingPosX;
-        sheep.y = sheep.startingPosY;
-        sheep.jumping = false;
-        sheep.falling = false;
-        sheep.jumpSpeedY = sheep.originalJumpSpeedY;
-        sheep.jumpSpeedX = sheep.originalJumpSpeedX;
-        sheep.jumpCounter = 0;
-        count += 1;
-
-        //randomize sheep speed
-        sheep.speedX = random(sheep.minSpeed, sheep.maxSpeed);
+        resetSheep();
 
     }
-    //sheep jumping movement
+
     else if (sheep.jumping) {
-
-        //checks if sheep has reached apex of jump
-        if (sheep.jumpCounter === sheep.jumpTime / 2) {
-            sheep.falling = true;
-        }
-        //checks if sheep has finished jumping
-        else if (sheep.jumpCounter === sheep.jumpTime) {
-            sheep.jumpCounter = 0;
-            sheep.jumping = false;
-            sheep.falling = false;
-        }
-        //sheep falling movement
-        if (sheep.falling) {
-            //jump speed values change to smooth out the arc of the jump
-            sheep.jumpSpeedY += 0.15;
-            sheep.jumpSpeedY = constrain(sheep.jumpSpeedY, sheep.minJumpSpeedY, sheep.maxJumpSpeedY);
-            sheep.y += sheep.jumpSpeedY;
-
-            sheep.jumpSpeedX -= 0.25;
-            sheep.jumpSpeedX = constrain(sheep.jumpSpeedX, sheep.originalJumpSpeedX, sheep.maxJumpSpeedX);
-
-            //move legs to look like falling
-            sheep.legs.frontLegY = 27;
-            sheep.legs.backLegY = 20;
-        }
-        //sheep rising movement
-        else {
-            sheep.jumpSpeedY -= 0.15;
-            sheep.jumpSpeedY = constrain(sheep.jumpSpeedY, sheep.minJumpSpeedY, sheep.maxJumpSpeedY);
-            sheep.y -= sheep.jumpSpeedY;
-
-            sheep.jumpSpeedX += 0.25;
-            sheep.jumpSpeedX = constrain(sheep.jumpSpeedX, sheep.originalJumpSpeedX, sheep.maxJumpSpeedX);
-
-            //move legs to look like jumping
-            sheep.legs.frontLegY = 20;
-            sheep.legs.backLegY = 30;
-        }
-
-        sheep.x += sheep.jumpSpeedX;
-        //counts amount of frames that sheep has been jumping
-        sheep.jumpCounter += 1;
+        sheepJump();
     }
-    //walking movement
+
     else {
-
-        sheep.x += sheep.speedX;
-
-        //makes sheep walk up and down hill - before and after fence
-        if (sheep.x < 355) {
-            sheep.y -= 0.2 * sheep.speedX;
-        }
-        else {
-            sheep.y += 1;
-        }
-
-        //resets leg positions
-        sheep.legs.frontLegY = 25;
-        sheep.legs.backLegY = 25;
-
+        sheepWalk();
     }
-
-    //screen gets darker the more sheep are counted & reaches max darkness at 20 sheep
-    darkness.currentDarkness = map(count, 0, 20, 0, darkness.maxDarkness);
-    darkness.currentDarkness = constrain(darkness.currentDarkness, 0, darkness.maxDarkness);
 
     drawSheep();
     drawText();
-    drawDarkness();
+    screenDarkness();
 
+}
+
+function sheepJump() {
+
+    //checks if sheep has reached apex of jump
+    if (sheep.jumpCounter === sheep.jumpTime / 2) {
+        sheep.falling = true;
+    }
+    //checks if sheep has finished jumping
+    else if (sheep.jumpCounter === sheep.jumpTime) {
+        sheep.jumpCounter = 0;
+        sheep.jumping = false;
+        sheep.falling = false;
+    }
+
+    //sheep falling movement
+    if (sheep.falling) {
+        //jump speed values change to smooth out the arc of the jump
+        sheep.jumpSpeedY += sheep.jumpAccelerationY;
+        sheep.jumpSpeedY = constrain(sheep.jumpSpeedY, sheep.minJumpSpeedY, sheep.maxJumpSpeedY);
+        sheep.y += sheep.jumpSpeedY;
+
+        sheep.jumpSpeedX -= sheep.jumpAccelerationX;
+        sheep.jumpSpeedX = constrain(sheep.jumpSpeedX, sheep.originalJumpSpeedX, sheep.maxJumpSpeedX);
+
+        //move legs to look like falling
+        sheep.legs.frontLegY = sheep.legs.lowLegPosition;
+        sheep.legs.backLegY = sheep.legs.highLegPosition;
+    }
+    //sheep rising movement
+    else {
+        sheep.jumpSpeedY -= sheep.jumpAccelerationY;
+        sheep.jumpSpeedY = constrain(sheep.jumpSpeedY, sheep.minJumpSpeedY, sheep.maxJumpSpeedY);
+        sheep.y -= sheep.jumpSpeedY;
+
+        sheep.jumpSpeedX += sheep.jumpAccelerationX;
+        sheep.jumpSpeedX = constrain(sheep.jumpSpeedX, sheep.originalJumpSpeedX, sheep.maxJumpSpeedX);
+
+        //move legs to look like jumping
+        sheep.legs.frontLegY = sheep.legs.highLegPosition;
+        sheep.legs.backLegY = sheep.legs.lowLegPosition;
+    }
+
+    sheep.x += sheep.jumpSpeedX;
+    //counts amount of frames that sheep has been jumping
+    sheep.jumpCounter += 1;
+}
+
+function sheepWalk() {
+
+    sheep.x += sheep.speedX;
+
+    //makes sheep walk up and down hill - before and after fence
+    if (sheep.x < fence.right) {
+        sheep.y -= sheep.walkUpSpeedY;
+    }
+    else {
+        sheep.y += sheep.walkDownSpeedY;
+    }
+
+    //resets leg positions
+    sheep.legs.frontLegY = sheep.legs.walkPosition;
+    sheep.legs.backLegY = sheep.legs.walkPosition;
+}
+
+function resetSheep() {
+    //reset sheep
+    sheep.x = sheep.startingPosX;
+    sheep.y = sheep.startingPosY;
+    sheep.jumping = false;
+    sheep.falling = false;
+    sheep.jumpSpeedY = sheep.originalJumpSpeedY;
+    sheep.jumpSpeedX = sheep.originalJumpSpeedX;
+    sheep.jumpCounter = 0;
+    count += 1;
+
+    //randomize sheep speed
+    sheep.speedX = random(sheep.minSpeed, sheep.maxSpeed);
 }
 
 /**
@@ -367,7 +401,6 @@ function mousePressed() {
     //checks if mouse is over sheep hitbox
     const distance = dist(mouseX, mouseY, sheep.x, sheep.y);
     const mouseIsOverlapping = (distance < sheep.hitBoxSize / 2);
-
 
     if (mouseIsOverlapping) {
         sheep.jumping = true;
@@ -388,6 +421,7 @@ function drawSky() {
     noStroke();
     fill(sky.stripes.one.r, sky.stripes.one.g, sky.stripes.one.b)
 
+    //make rectangle the size of one 8th of the screen height
     rect(0, 0, width, height / 8);
     pop();
 
@@ -680,7 +714,11 @@ function drawText() {
 /**
  * Changes screen darkness by changing the alpha of a dark rectangle which increases with sheep counted
  */
-function drawDarkness() {
+function screenDarkness() {
+
+    //screen gets darker the more sheep are counted & reaches max darkness at 20 sheep
+    darkness.currentDarkness = map(count, 0, 20, 0, darkness.maxDarkness);
+    darkness.currentDarkness = constrain(darkness.currentDarkness, 0, darkness.maxDarkness);
 
     push();
     noStroke();

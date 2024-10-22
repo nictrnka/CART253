@@ -392,7 +392,6 @@ function resetSheep() {
         count += 1;
 
         if (count > highscore) {
-
             highscore += 1;
         }
     }

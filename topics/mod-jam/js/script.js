@@ -21,10 +21,23 @@ const frog = {
     body: {
         x: 350,
         y: 520,
-        size: 150
+        size: 150,
+        state: "idle",
+        speed: 20,
+
+        direction: {
+            x: undefined,
+            y: undefined,
+
+        },
+        velocity: {
+            x: undefined,
+            y: undefined,
+        }
     },
     // The frog's tongue has a position, size, speed, and state
     tongue: {
+
         x: undefined,
         y: 480,
 
@@ -52,6 +65,11 @@ const fly = {
     size: 10,
     speed: 3
 };
+
+let target = {
+    x: undefined,
+    y: undefined,
+}
 
 /**
  * Creates the canvas and initializes the fly
@@ -110,6 +128,35 @@ function resetFly() {
  */
 function moveFrog() {
     //frog.body.x = mouseX;
+
+    console.log(frog.body.state);
+
+    if (frog.body.state === "idle") {
+        frog.body.velocity.x = 0;
+        frog.body.velocity.y = 0;
+    }
+    else if (frog.body.state === "outbound") {
+
+        frog.body.y += frog.body.velocity.y * frog.body.speed;
+        frog.body.x += frog.body.velocity.x * frog.body.speed;
+
+        if (frog.body.y <= 0) {
+            frog.body.state = "idle";
+            frog.tongue.state = "idle";
+        }
+        if (frog.body.y >= height) {
+            frog.body.state = "idle";
+            frog.tongue.state = "idle";
+        }
+        if (frog.body.x <= 0) {
+            frog.body.state = "idle";
+            frog.tongue.state = "idle";
+        }
+        if (frog.body.x >= width) {
+            frog.body.state = "idle";
+            frog.tongue.state = "idle";
+        }
+    }
 }
 
 /**
@@ -125,6 +172,15 @@ function moveTongue() {
         frog.tongue.x = frog.body.x;
         frog.tongue.y = frog.body.y;
     }
+
+    if (frog.tongue.state === "stuck") {
+        frog.tongue.velocity.y = 0;
+        frog.tongue.velocity.x = 0;
+
+        calculateDirection(frog.body, frog.tongue);
+    }
+
+
     // If the tongue is outbound, it moves up
     else if (frog.tongue.state === "outbound") {
 
@@ -134,16 +190,16 @@ function moveTongue() {
 
         // The tongue bounces back if it hits the borders
         if (frog.tongue.y <= 0) {
-            frog.tongue.state = "inbound";
+            frog.tongue.state = "stuck";
         }
         if (frog.tongue.y >= height) {
-            frog.tongue.state = "inbound";
+            frog.tongue.state = "stuck";
         }
         if (frog.tongue.x <= 0) {
-            frog.tongue.state = "inbound";
+            frog.tongue.state = "stuck";
         }
         if (frog.tongue.x >= width) {
-            frog.tongue.state = "inbound";
+            frog.tongue.state = "stuck";
         }
 
 
@@ -165,12 +221,7 @@ function moveTongue() {
  */
 function drawFrog() {
 
-    // Draw the frog's body
-    push();
-    fill("#00ff00");
-    noStroke();
-    ellipse(frog.body.x, frog.body.y, frog.body.size);
-    pop();
+
 
     // Draw the tongue tip
     push();
@@ -184,6 +235,13 @@ function drawFrog() {
     stroke("#ff0000");
     strokeWeight(frog.tongue.size);
     line(frog.tongue.x, frog.tongue.y, frog.body.x, frog.body.y);
+    pop();
+
+    // Draw the frog's body
+    push();
+    fill("#00ff00");
+    noStroke();
+    ellipse(frog.body.x, frog.body.y, frog.body.size);
     pop();
 
 }
@@ -200,26 +258,49 @@ function checkTongueFlyOverlap() {
         // Reset the fly
         resetFly();
         // Bring back the tongue
-        frog.tongue.state = "inbound";
+        //frog.tongue.state = "inbound";
     }
 }
 
 /**
  * Launch the tongue on click (if it's not launched yet)
  */
+
 function mousePressed() {
 
-    if (frog.tongue.state === "idle") {
+    target.x = mouseX;
+    target.y = mouseY;
 
-        frog.tongue.direction.x = mouseX - frog.body.x;
-        frog.tongue.direction.y = mouseY - frog.body.y;
+    calculateDirection(frog.tongue, target)
 
-        var angle = Math.atan2(frog.tongue.direction.y, frog.tongue.direction.x);
+    // if (frog.tongue.state === "idle") {
+
+    //     frog.tongue.direction.x = mouseX - frog.body.x;
+    //     frog.tongue.direction.y = mouseY - frog.body.y;
+
+    //     var angle = Math.atan2(frog.tongue.direction.y, frog.tongue.direction.x);
+
+    //     var magnitude = 1.0;
+    //     frog.tongue.velocity.x = Math.cos(angle) * magnitude;
+    //     frog.tongue.velocity.y = Math.sin(angle) * magnitude;
+
+    //     frog.tongue.state = "outbound";
+    // }
+}
+
+function calculateDirection(bodyPart, target) {
+
+    if (bodyPart.state === "idle") {
+
+        bodyPart.direction.x = target.x - bodyPart.x;
+        bodyPart.direction.y = target.y - bodyPart.y;
+
+        var angle = Math.atan2(bodyPart.direction.y, bodyPart.direction.x);
 
         var magnitude = 1.0;
-        frog.tongue.velocity.x = Math.cos(angle) * magnitude;
-        frog.tongue.velocity.y = Math.sin(angle) * magnitude;
+        bodyPart.velocity.x = Math.cos(angle) * magnitude;
+        bodyPart.velocity.y = Math.sin(angle) * magnitude;
 
-        frog.tongue.state = "outbound";
+        bodyPart.state = "outbound";
     }
 }

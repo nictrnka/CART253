@@ -140,22 +140,29 @@ function moveFrog() {
         frog.body.y += frog.body.velocity.y * frog.body.speed;
         frog.body.x += frog.body.velocity.x * frog.body.speed;
 
-        if (frog.body.y <= 0) {
+        const distance = dist(frog.body.x, frog.body.y, frog.tongue.x, frog.tongue.y);
+        if (distance < 100) {
             frog.body.state = "idle";
             frog.tongue.state = "idle";
+            frog.body.x = frog.tongue.x;
+            frog.body.y = frog.tongue.y;
         }
-        if (frog.body.y >= height) {
-            frog.body.state = "idle";
-            frog.tongue.state = "idle";
-        }
-        if (frog.body.x <= 0) {
-            frog.body.state = "idle";
-            frog.tongue.state = "idle";
-        }
-        if (frog.body.x >= width) {
-            frog.body.state = "idle";
-            frog.tongue.state = "idle";
-        }
+        // if (frog.body.y <= 0) {
+        //     frog.body.state = "idle";
+        //     frog.tongue.state = "idle";
+        // }
+        // if (frog.body.y >= height) {
+        //     frog.body.state = "idle";
+        //     frog.tongue.state = "idle";
+        // }
+        // if (frog.body.x <= 0) {
+        //     frog.body.state = "idle";
+        //     frog.tongue.state = "idle";
+        // }
+        // if (frog.body.x >= width) {
+        //     frog.body.state = "idle";
+        //     frog.tongue.state = "idle";
+        // }
     }
 }
 
@@ -189,17 +196,21 @@ function moveTongue() {
         console.log(frog.tongue.x);
 
         // The tongue bounces back if it hits the borders
-        if (frog.tongue.y <= 0) {
+        if (frog.tongue.y - frog.tongue.size / 2 <= 0) {
             frog.tongue.state = "stuck";
+            frog.tongue.y = frog.tongue.size / 2
         }
-        if (frog.tongue.y >= height) {
+        if (frog.tongue.y - frog.tongue.size / 2 >= height) {
             frog.tongue.state = "stuck";
+            frog.tongue.y = frog.tongue.size / 2
         }
-        if (frog.tongue.x <= 0) {
+        if (frog.tongue.x - frog.tongue.size / 2 <= 0) {
             frog.tongue.state = "stuck";
+            frog.tongue.y = frog.tongue.size / 2
         }
-        if (frog.tongue.x >= width) {
+        if (frog.tongue.x - frog.tongue.size / 2 >= width) {
             frog.tongue.state = "stuck";
+            frog.tongue.y = frog.tongue.size / 2
         }
 
 
@@ -221,14 +232,14 @@ function moveTongue() {
  */
 function drawFrog() {
 
-
-
-    // Draw the tongue tip
+    // Draw the frog's body
     push();
-    fill("#ff0000");
+    fill("#00ff00");
     noStroke();
-    ellipse(frog.tongue.x, frog.tongue.y, frog.tongue.size);
+    ellipse(frog.body.x, frog.body.y, frog.body.size);
     pop();
+
+
 
     // Draw the rest of the tongue
     push();
@@ -237,12 +248,14 @@ function drawFrog() {
     line(frog.tongue.x, frog.tongue.y, frog.body.x, frog.body.y);
     pop();
 
-    // Draw the frog's body
+    // Draw the tongue tip
     push();
-    fill("#00ff00");
+    fill(0);
     noStroke();
-    ellipse(frog.body.x, frog.body.y, frog.body.size);
+    ellipse(frog.tongue.x, frog.tongue.y, frog.tongue.size);
     pop();
+
+
 
 }
 

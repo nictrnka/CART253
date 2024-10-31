@@ -71,6 +71,8 @@ let target = {
     y: undefined,
 }
 
+const time = 0.2
+
 /**
  * Creates the canvas and initializes the fly
  */
@@ -141,7 +143,7 @@ function moveFrog() {
         frog.body.x += frog.body.velocity.x * frog.body.speed;
 
         const distance = dist(frog.body.x, frog.body.y, frog.tongue.x, frog.tongue.y);
-        if (distance < 100) {
+        if (distance < 10) {
             frog.body.state = "idle";
             frog.tongue.state = "idle";
             frog.body.x = frog.tongue.x;
@@ -200,17 +202,17 @@ function moveTongue() {
             frog.tongue.state = "stuck";
             frog.tongue.y = frog.tongue.size / 2
         }
-        if (frog.tongue.y - frog.tongue.size / 2 >= height) {
+        if (frog.tongue.y + frog.tongue.size / 2 >= height) {
             frog.tongue.state = "stuck";
-            frog.tongue.y = frog.tongue.size / 2
+            frog.tongue.y = height - frog.tongue.size / 2
         }
         if (frog.tongue.x - frog.tongue.size / 2 <= 0) {
             frog.tongue.state = "stuck";
-            frog.tongue.y = frog.tongue.size / 2
+            frog.tongue.x = frog.tongue.size / 2
         }
-        if (frog.tongue.x - frog.tongue.size / 2 >= width) {
+        if (frog.tongue.x + frog.tongue.size / 2 >= width) {
             frog.tongue.state = "stuck";
-            frog.tongue.y = frog.tongue.size / 2
+            frog.tongue.x = width - frog.tongue.size / 2
         }
 
 

@@ -15,18 +15,6 @@ let flies = [
         y: 125,
         size: 10,
         buzziness: 2
-    },
-    {
-        x: 160,
-        y: 170,
-        size: 14,
-        buzziness: 4
-    },
-    {
-        x: 180,
-        y: 50,
-        size: 5,
-        buzziness: 6
     }
 ];
 
@@ -47,6 +35,39 @@ function draw() {
     for (let fly of flies) {
         moveFly(fly);
         drawFly(fly);
+    }
+}
+
+
+function keyPressed() {
+    let fly = createFly();
+    flies.push(fly);
+}
+function createFly() {
+    let fly = {
+        x: random(0, width),
+        y: random(0, height),
+        size: random(10, 20),
+        buzziness: random(2, 8)
+    };
+
+    return fly;
+}
+
+function mousePressed() {
+    // Note we have to check *every* fly in the array to see if it was clicked
+    for (let fly of flies) {
+        // Get the distance between the click and the fly
+        let d = dist(mouseX, mouseY, fly.x, fly.y);
+        // Check if the click is inside the fly
+        if (d < fly.size / 2) {
+            // If so, get the *index* of this fly in the array
+            let index = flies.indexOf(fly);
+            // And now use splice to *remove* the fly at that index
+            // Remember we provide the index and the *number of elements*
+            // to remove. In this case just the one.
+            flies.splice(index, 1);
+        }
     }
 }
 

@@ -16,6 +16,10 @@
 "use strict";
 
 // Our frog
+
+let screen = "title"
+let score = 0;
+
 const frog = {
     // The frog's body has a position and size
     body: {
@@ -24,6 +28,7 @@ const frog = {
         size: 150,
         state: "idle",
         speed: 20,
+        health: 5,
 
         direction: {
             x: undefined,
@@ -84,13 +89,26 @@ function setup() {
 }
 
 function draw() {
-    background("#87ceeb");
-    moveFly();
-    drawFly();
-    moveFrog();
-    moveTongue();
-    drawFrog();
-    checkTongueFlyOverlap();
+
+    if (screen === "title")
+    {
+        background("#87ceeb");
+    }
+    else if (screen === "game")
+    {
+        background("#87ceeb");
+        moveFly();
+        drawFly();
+        moveFrog();
+        moveTongue();
+        drawFrog();
+        checkTongueFlyOverlap();
+    }
+    else if (screen === "gameover")
+    {
+        background("#87ceeb");
+    }
+   
 }
 
 /**

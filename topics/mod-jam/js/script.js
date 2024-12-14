@@ -90,12 +90,11 @@ function setup() {
 
 function draw() {
 
-    if (screen === "title")
-    {
+    if (screen === "title") {
         background("#87ceeb");
+        drawTitle();
     }
-    else if (screen === "game")
-    {
+    else if (screen === "game") {
         background("#87ceeb");
         moveFly();
         drawFly();
@@ -104,11 +103,29 @@ function draw() {
         drawFrog();
         checkTongueFlyOverlap();
     }
-    else if (screen === "gameover")
-    {
+    else if (screen === "gameover") {
         background("#87ceeb");
     }
-   
+
+}
+
+function drawTitle() {
+
+    push();
+    textAlign(CENTER, CENTER);
+    textSize(100);
+    text('FROGGER 3D', width / 2, height / 3);
+    pop();
+
+    push();
+    textAlign(CENTER, CENTER);
+    textSize(75);
+    text('CLICK 2 START', width / 2, height / 2);
+    pop();
+}
+
+function startGame() {
+    screen = "game";
 }
 
 /**
@@ -252,6 +269,20 @@ function moveTongue() {
  */
 function drawFrog() {
 
+    // Draw the tongue tip
+    push();
+    fill(0);
+    noStroke();
+    ellipse(frog.tongue.x, frog.tongue.y, frog.tongue.size);
+    pop();
+
+    // Draw the rest of the tongue
+    push();
+    stroke("#ff0000");
+    strokeWeight(frog.tongue.size);
+    line(frog.tongue.x, frog.tongue.y, frog.body.x, frog.body.y);
+    pop();
+
     // Draw the frog's body
     push();
     fill("#00ff00");
@@ -261,19 +292,8 @@ function drawFrog() {
 
 
 
-    // Draw the rest of the tongue
-    push();
-    stroke("#ff0000");
-    strokeWeight(frog.tongue.size);
-    line(frog.tongue.x, frog.tongue.y, frog.body.x, frog.body.y);
-    pop();
 
-    // Draw the tongue tip
-    push();
-    fill(0);
-    noStroke();
-    ellipse(frog.tongue.x, frog.tongue.y, frog.tongue.size);
-    pop();
+
 
 
 
@@ -301,10 +321,20 @@ function checkTongueFlyOverlap() {
 
 function mousePressed() {
 
-    target.x = mouseX;
-    target.y = mouseY;
 
-    calculateDirection(frog.tongue, target)
+    if (screen === "title") {
+        startGame();
+    }
+    else if (screen === "game") {
+        target.x = mouseX;
+        target.y = mouseY;
+
+        calculateDirection(frog.tongue, target)
+    }
+    else if (screen === "gameover") {
+        startGame();
+    }
+
 
     // if (frog.tongue.state === "idle") {
 

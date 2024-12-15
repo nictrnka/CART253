@@ -21,14 +21,19 @@ let screen = "title"
 let score = 0;
 
 const frog = {
+
+    hunger: 3,
     // The frog's body has a position and size
     body: {
         x: 350,
         y: 350,
         size: 150,
+        fullSize: 150,
+        mediumSize: 100,
+        smallSize: 50,
         state: "idle",
         speed: 20,
-        hunger: 5,
+
 
         direction: {
             x: undefined,
@@ -93,28 +98,28 @@ function setup() {
     createCanvas(700, 700);
 
     // Give the fly its first random position
-    resetFly();
+    resetFly(false, false);
 }
 
 function draw() {
+    background("#87ceeb");
 
     if (screen === "title") {
-        background("#87ceeb");
+
         drawTitle();
     }
     else if (screen === "game") {
-        background("#87ceeb");
-
         moveFrog();
         moveTongue();
         drawFrog();
         moveFly();
         drawFly();
+        drawScore();
 
         checkTongueFlyOverlap();
     }
     else if (screen === "gameover") {
-        background("#87ceeb");
+        drawGameover();
     }
 
 }
@@ -134,7 +139,23 @@ function drawTitle() {
     pop();
 }
 
+function drawGameover() {
+    push();
+    textAlign(CENTER, CENTER);
+    textSize(90);
+    text('YOU STARVED!!', width / 2, height / 3);
+    pop();
+
+    push();
+    textAlign(CENTER, CENTER);
+    textSize(75);
+    text('CLICK 2 RESET', width / 2, height / 2);
+    pop();
+}
+
 function startGame() {
+    score = 0;
+    frog.hunger = 3;
     screen = "game";
 }
 
@@ -158,13 +179,13 @@ function moveFly() {
 function checkFlyOffScreen() {
     // Handle the fly going off the canvas
     if (fly.spawn <= 5 && fly.x < 0) {
-        resetFly(false);
+        resetFly(false, true);
     }
     else if (fly.x > width) {
-        resetFly(false);
+        resetFly(false, true);
     }
     else if (fly.y > height || fly.y < 0) {
-        resetFly(false);
+        resetFly(false, true);
     }
 }
 
@@ -182,15 +203,20 @@ function drawFly() {
 /**
  * Resets the fly to the left with a random y
  */
-function resetFly(flyWasEaten) {
+function resetFly(flyWasEaten, flyWasMissed) {
 
     if (flyWasEaten) {
         score += 1;
-        console.log("eaten");
+
+        if (frog.hunger < 3) {
+            frog.hunger += 1;
+        }
     }
-    else {
+    else if (flyWasMissed) {
         frog.hunger -= 1;
-        console.log("noteaten");
+    }
+    if (frog.hunger === 0) {
+        screen = "gameover";
     }
 
     fly.spawn = random(0, 10.1);
@@ -310,6 +336,14 @@ function moveTongue() {
  */
 function drawFrog() {
 
+    if (frog.hunger === 3) {
+        frog.body.size = frog.body.fullSize;
+    } else if (frog.hunger === 2) {
+        frog.body.size = frog.body.mediumSize;
+    } else if (frog.hunger === 1) {
+        frog.body.size = frog.body.smallSize;
+    }
+
     // Draw the tongue tip
     push();
     fill(0);
@@ -343,7 +377,7 @@ function checkTongueFlyOverlap() {
     const eaten = (d < frog.tongue.size / 2 + fly.size / 2);
     if (eaten) {
         // Reset the fly
-        resetFly(true);
+        resetFly(true, false);
         // Bring back the tongue
         //frog.tongue.state = "inbound";
     }
@@ -388,4 +422,14 @@ function calculateDirection(bodyPart, target) {
     else if (bodyPart.state === "outbound") {
 
     }
+}
+function drawScore() {
+    push();
+    textSize(25);
+    textAlign(CENTER, CENTER);
+    text("flies eaten:", 550, 650);
+    text(score, 650, 650);
+    text(frog.hunger, 40, 600);
+    pop();
+
 }

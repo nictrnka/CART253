@@ -22,15 +22,12 @@ let score = 0;
 
 const frog = {
 
-    hunger: 3,
     // The frog's body has a position and size
     body: {
         x: 350,
         y: 350,
-        size: 150,
-        fullSize: 150,
-        mediumSize: 100,
-        smallSize: 50,
+        size: 50,
+        startSize: 50,
         state: "idle",
         speed: 20,
 
@@ -81,6 +78,7 @@ const fly = {
     speed: {
         x: 3,
         y: 0.2,
+        variation: 0.5,
     }
 };
 
@@ -119,6 +117,8 @@ function draw() {
         checkTongueFlyOverlap();
     }
     else if (screen === "gameover") {
+
+        drawFrog();
         drawGameover();
     }
 
@@ -155,7 +155,10 @@ function drawGameover() {
 
 function startGame() {
     score = 0;
-    frog.hunger = 3;
+    frog.body.state = "idle";
+    frog.tongue.state = "idle";
+    frog.body.x = 350;
+    frog.body.y = 350;
     screen = "game";
 }
 
@@ -207,17 +210,18 @@ function resetFly(flyWasEaten, flyWasMissed) {
 
     if (flyWasEaten) {
         score += 1;
-
-        if (frog.hunger < 3) {
-            frog.hunger += 1;
-        }
+        frog.body.size += 25;
     }
     else if (flyWasMissed) {
-        frog.hunger -= 1;
+        if (frog.body.size === frog.body.startSize) {
+            screen = "gameover";
+        }
+        else {
+            frog.body.size = frog.body.startSize;
+        }
+
     }
-    if (frog.hunger === 0) {
-        screen = "gameover";
-    }
+
 
     fly.spawn = random(0, 10.1);
     if (fly.spawn <= 5) {
@@ -226,6 +230,9 @@ function resetFly(flyWasEaten, flyWasMissed) {
     else {
         fly.x = 0;
     }
+
+    fly.speed.x = random(fly.speed.x - fly.speed.variation, fly.speed.x + fly.speed.variation);
+
     fly.y = random(0, height);
     //if fly is on top of screen
     if (fly.y <= 100) {
@@ -320,29 +327,21 @@ function moveTongue() {
 
     }
     // If the tongue is inbound, it moves down
-    else if (frog.tongue.state === "inbound") {
-        frog.tongue.y -= frog.tongue.velocity.y * frog.tongue.speed;
-        frog.tongue.x -= frog.tongue.velocity.x * frog.tongue.speed;
+    // else if (frog.tongue.state === "inbound") {
+    //     frog.tongue.y -= frog.tongue.velocity.y * frog.tongue.speed;
+    //     frog.tongue.x -= frog.tongue.velocity.x * frog.tongue.speed;
 
-        // The tongue stops if it hits the bottom
-        if (frog.tongue.y >= height) {
-            frog.tongue.state = "idle";
-        }
-    }
+    //     // The tongue stops if it hits the bottom
+    //     if (frog.tongue.y >= height) {
+    //         frog.tongue.state = "idle";
+    //     }
+    // }
 }
 
 /**
  * Displays the tongue (tip and line connection) and the frog (body)
  */
 function drawFrog() {
-
-    if (frog.hunger === 3) {
-        frog.body.size = frog.body.fullSize;
-    } else if (frog.hunger === 2) {
-        frog.body.size = frog.body.mediumSize;
-    } else if (frog.hunger === 1) {
-        frog.body.size = frog.body.smallSize;
-    }
 
     // Draw the tongue tip
     push();
@@ -364,6 +363,16 @@ function drawFrog() {
     noStroke();
     ellipse(frog.body.x, frog.body.y, frog.body.size);
     pop();
+
+    //Draw the frog's eyes, if it's dead
+    if (screen === "gameover") {
+        push();
+        textAlign(CENTER, CENTER);
+        textSize(20);
+        text("XX", frog.body.x, frog.body.y);
+        pop();
+    }
+
 }
 
 
@@ -375,11 +384,9 @@ function checkTongueFlyOverlap() {
     const d = dist(frog.tongue.x, frog.tongue.y, fly.x, fly.y);
     // Check if it's an overlap
     const eaten = (d < frog.tongue.size / 2 + fly.size / 2);
-    if (eaten) {
+    if (frog.tongue.state === "outbound" && eaten) {
         // Reset the fly
         resetFly(true, false);
-        // Bring back the tongue
-        //frog.tongue.state = "inbound";
     }
 }
 
@@ -429,7 +436,6 @@ function drawScore() {
     textAlign(CENTER, CENTER);
     text("flies eaten:", 550, 650);
     text(score, 650, 650);
-    text(frog.hunger, 40, 600);
     pop();
 
 }

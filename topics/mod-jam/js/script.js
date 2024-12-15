@@ -24,11 +24,11 @@ const frog = {
     // The frog's body has a position and size
     body: {
         x: 350,
-        y: 520,
+        y: 350,
         size: 150,
         state: "idle",
         speed: 20,
-        health: 5,
+        hunger: 5,
 
         direction: {
             x: undefined,
@@ -36,6 +36,10 @@ const frog = {
 
         },
         velocity: {
+            x: undefined,
+            y: undefined,
+        },
+        storedVelocity: {
             x: undefined,
             y: undefined,
         }
@@ -67,8 +71,12 @@ const frog = {
 const fly = {
     x: 0,
     y: 200, // Will be random
+    spawn: undefined, // will be random
     size: 10,
-    speed: 3
+    speed: {
+        x: 3,
+        y: 0.2,
+    }
 };
 
 let target = {
@@ -96,11 +104,13 @@ function draw() {
     }
     else if (screen === "game") {
         background("#87ceeb");
-        moveFly();
-        drawFly();
+
         moveFrog();
         moveTongue();
         drawFrog();
+        moveFly();
+        drawFly();
+
         checkTongueFlyOverlap();
     }
     else if (screen === "gameover") {
@@ -134,10 +144,27 @@ function startGame() {
  */
 function moveFly() {
     // Move the fly
-    fly.x += fly.speed;
+    if (fly.spawn <= 5) {
+        fly.x -= fly.speed.x;
+    }
+    else {
+        fly.x += fly.speed.x;
+    }
+    fly.y += fly.speed.y;
+
+    checkFlyOffScreen();
+}
+
+function checkFlyOffScreen() {
     // Handle the fly going off the canvas
-    if (fly.x > width) {
-        resetFly();
+    if (fly.spawn <= 5 && fly.x < 0) {
+        resetFly(false);
+    }
+    else if (fly.x > width) {
+        resetFly(false);
+    }
+    else if (fly.y > height || fly.y < 0) {
+        resetFly(false);
     }
 }
 
@@ -155,9 +182,38 @@ function drawFly() {
 /**
  * Resets the fly to the left with a random y
  */
-function resetFly() {
-    fly.x = 0;
-    fly.y = random(0, 300);
+function resetFly(flyWasEaten) {
+
+    if (flyWasEaten) {
+        score += 1;
+        console.log("eaten");
+    }
+    else {
+        frog.hunger -= 1;
+        console.log("noteaten");
+    }
+
+    fly.spawn = random(0, 10.1);
+    if (fly.spawn <= 5) {
+        fly.x = width;
+    }
+    else {
+        fly.x = 0;
+    }
+    fly.y = random(0, height);
+    //if fly is on top of screen
+    if (fly.y <= 100) {
+        fly.speed.y = random(0, 0.5);
+    }
+    //if fly is on bottom of screen
+    else if (fly.y >= 600) {
+        fly.speed.y = random(-0.5, 0);
+    }
+    //fly is somewhere in the middle of the screen
+    else {
+        fly.speed.y = random(-0.5, 0.5);
+    }
+
 }
 
 /**
@@ -166,7 +222,7 @@ function resetFly() {
 function moveFrog() {
     //frog.body.x = mouseX;
 
-    console.log(frog.body.state);
+
 
     if (frog.body.state === "idle") {
         frog.body.velocity.x = 0;
@@ -178,28 +234,13 @@ function moveFrog() {
         frog.body.x += frog.body.velocity.x * frog.body.speed;
 
         const distance = dist(frog.body.x, frog.body.y, frog.tongue.x, frog.tongue.y);
+
         if (distance < 10) {
             frog.body.state = "idle";
             frog.tongue.state = "idle";
             frog.body.x = frog.tongue.x;
             frog.body.y = frog.tongue.y;
         }
-        // if (frog.body.y <= 0) {
-        //     frog.body.state = "idle";
-        //     frog.tongue.state = "idle";
-        // }
-        // if (frog.body.y >= height) {
-        //     frog.body.state = "idle";
-        //     frog.tongue.state = "idle";
-        // }
-        // if (frog.body.x <= 0) {
-        //     frog.body.state = "idle";
-        //     frog.tongue.state = "idle";
-        // }
-        // if (frog.body.x >= width) {
-        //     frog.body.state = "idle";
-        //     frog.tongue.state = "idle";
-        // }
     }
 }
 
@@ -230,7 +271,7 @@ function moveTongue() {
 
         frog.tongue.y += frog.tongue.velocity.y * frog.tongue.speed;
         frog.tongue.x += frog.tongue.velocity.x * frog.tongue.speed;
-        console.log(frog.tongue.x);
+
 
         // The tongue bounces back if it hits the borders
         if (frog.tongue.y - frog.tongue.size / 2 <= 0) {
@@ -289,15 +330,8 @@ function drawFrog() {
     noStroke();
     ellipse(frog.body.x, frog.body.y, frog.body.size);
     pop();
-
-
-
-
-
-
-
-
 }
+
 
 /**
  * Handles the tongue overlapping the fly
@@ -309,7 +343,7 @@ function checkTongueFlyOverlap() {
     const eaten = (d < frog.tongue.size / 2 + fly.size / 2);
     if (eaten) {
         // Reset the fly
-        resetFly();
+        resetFly(true);
         // Bring back the tongue
         //frog.tongue.state = "inbound";
     }
@@ -320,7 +354,6 @@ function checkTongueFlyOverlap() {
  */
 
 function mousePressed() {
-
 
     if (screen === "title") {
         startGame();
@@ -334,21 +367,6 @@ function mousePressed() {
     else if (screen === "gameover") {
         startGame();
     }
-
-
-    // if (frog.tongue.state === "idle") {
-
-    //     frog.tongue.direction.x = mouseX - frog.body.x;
-    //     frog.tongue.direction.y = mouseY - frog.body.y;
-
-    //     var angle = Math.atan2(frog.tongue.direction.y, frog.tongue.direction.x);
-
-    //     var magnitude = 1.0;
-    //     frog.tongue.velocity.x = Math.cos(angle) * magnitude;
-    //     frog.tongue.velocity.y = Math.sin(angle) * magnitude;
-
-    //     frog.tongue.state = "outbound";
-    // }
 }
 
 function calculateDirection(bodyPart, target) {
@@ -365,5 +383,9 @@ function calculateDirection(bodyPart, target) {
         bodyPart.velocity.y = Math.sin(angle) * magnitude;
 
         bodyPart.state = "outbound";
+    }
+    //buffer movement inputs so you can set your next direction while still moving
+    else if (bodyPart.state === "outbound") {
+
     }
 }

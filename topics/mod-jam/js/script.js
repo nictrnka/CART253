@@ -1,6 +1,6 @@
 /**
- * Frogfrogfrog
- * Pippin Barr
+ * PETIT DÉJEUNER GRENOUILLE
+ * Nic Trnka
  * 
  * A game of catching flies with your frog-tongue
  * 
@@ -15,7 +15,7 @@
 
 "use strict";
 
-// Our frog
+
 
 let screen = "title"
 let score = 0;
@@ -32,6 +32,7 @@ const lilyPad = {
     }
 }
 
+// Our frog
 const frog = {
 
     // The frog's body has a position and size
@@ -84,16 +85,16 @@ const frog = {
 // Our fly
 // Has a position, size, and speed of horizontal movement
 const fly = {
-    x: 0,
+    x: 0, //will be either 0 or width
     y: 200, // Will be random
     spawn: undefined, // will be random
     size: 10,
     speed: {
-        originalX: 3,
+        originalX: 3, //base speed to be manipulated by variation and multiplier
         x: 3,
-        y: 0.2,
-        variation: 0.5,
-        multiplier: 0,
+        y: 0.2, // vertical speed, either + or - 
+        variation: 0.5, // speed gets changed by + or - this amount each time a fly spawns
+        multiplier: 0, // will increment 0.05 each time you eat a fly
     }
 };
 
@@ -119,7 +120,6 @@ function draw() {
     background("#87ceeb");
 
     if (screen === "title") {
-
         drawTitle();
     }
     else if (screen === "game") {
@@ -147,11 +147,6 @@ function drawTitle() {
     textAlign(CENTER, CENTER);
     textSize(25);
     text('PETIT DÉJEUNER GRENOUILLE', width / 2, height / 2.25);
-    pop();
-
-    push();
-    textAlign(CENTER, CENTER);
-    textSize(25);
     text('cliquez pour commencer', width / 2, height / 2);
     pop();
 }
@@ -243,7 +238,6 @@ function hungryText() {
         text("la grenouille a faim!", 350, 420);
         pop();
     }
-
 }
 
 /**
@@ -291,18 +285,18 @@ function drawFly() {
  * Moves the frog to the mouse position on x
  */
 function moveFrog() {
-
+    //locks frog position if idle
     if (frog.body.state === "idle") {
         frog.body.velocity.x = 0;
         frog.body.velocity.y = 0;
     }
     else if (frog.body.state === "outbound") {
-
+        // moves frog towards tongue position (stored in velocity)
         frog.body.y += frog.body.velocity.y * frog.body.speed;
         frog.body.x += frog.body.velocity.x * frog.body.speed;
-
+        //checks if frog has reached tongue position
         const distance = dist(frog.body.x, frog.body.y, frog.tongue.x, frog.tongue.y);
-
+        // changes both bodpyparts to idle state & locks frog position to tongue position if it has gotten close enough
         if (distance < 10) {
             frog.body.state = "idle";
             frog.tongue.state = "idle";
@@ -321,20 +315,22 @@ function moveTongue() {
 
     // If the tongue is idle, it doesn't do anything
     if (frog.tongue.state === "idle") {
-        // Do nothing
+        // locks tongue position at body position
         frog.tongue.x = frog.body.x;
         frog.tongue.y = frog.body.y;
     }
     //once the tongue reaches a wall, it stops moving and the body calculates direction towards it & then moves towards it.
     if (frog.tongue.state === "stuck") {
+        //locks frog tongue position
         frog.tongue.velocity.y = 0;
         frog.tongue.velocity.x = 0;
 
+        //calculates the direction from the frog body position to the tongue position & starts frog movement 
         calculateDirection(frog.body, frog.tongue);
     }
 
 
-    // If the tongue is outbound, it in the direction of the location the mouse was clicked
+    // If the tongue is outbound, it moves in the direction of the location the mouse was clicked
     else if (frog.tongue.state === "outbound") {
 
         frog.tongue.y += frog.tongue.velocity.y * frog.tongue.speed;
@@ -362,6 +358,7 @@ function moveTongue() {
     }
 }
 
+//draws a lily pad that the frog starts on. it is also a position that the frog can snap to.
 function drawLilyPad() {
     push();
     fill(lilyPad.fill.r, lilyPad.fill.g, lilyPad.fill.b);
@@ -417,7 +414,7 @@ function checkTongueFlyOverlap() {
     // Check if it's an overlap
     const eaten = (d < frog.tongue.size / 2 + fly.size / 2);
     if (frog.tongue.state === "outbound" && eaten) {
-        // Reset the fly
+        // Reset the fly, saying that (true) it was eaten and (false) it was missed.
         resetFly(true, false);
     }
 }
@@ -428,13 +425,15 @@ function checkTonguePadOverlap() {
     // Check if it's an overlap
     const landed = (d < frog.tongue.size / 2 + lilyPad.size / 2);
 
+    // checks if the frog is sitting at the exact lily pad position, so that it doesn't snap the tongue here if it is.
     if (frog.body.x === lilyPad.x && frog.body.y === lilyPad.y) {
         frog.onPad = true;
     }
     else {
         frog.onPad = false;
     }
-
+    // if the frog is not already on the lily pad, the tongue is outbound, and the tongue overlaps the lilypad, it changes the state to stuck
+    //& snaps the tongue position to the lilypad.
     if (frog.onPad === false && frog.tongue.state === "outbound" && landed) {
         frog.tongue.state = "stuck";
         frog.tongue.y = lilyPad.y;

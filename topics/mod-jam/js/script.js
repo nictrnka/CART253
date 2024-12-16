@@ -88,6 +88,7 @@ const fly = {
     spawn: undefined, // will be random
     size: 10,
     speed: {
+        originalX: 3,
         x: 3,
         y: 0.2,
         variation: 0.5,
@@ -208,7 +209,7 @@ function resetFly(flyWasEaten, flyWasMissed) {
         fly.x = 0;
     }
 
-    fly.speed.x = random(fly.speed.x - fly.speed.variation, fly.speed.x + fly.speed.variation);
+    fly.speed.x = random(fly.speed.originalX - fly.speed.variation, fly.speed.originalX + fly.speed.variation);
 
     fly.y = random(0, height);
     //if fly is on top of screen

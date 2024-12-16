@@ -20,6 +20,17 @@
 let screen = "title"
 let score = 0;
 
+const lilyPad = {
+    size: 80,
+    x: 350,
+    y: 350,
+    fill: {
+        r: 0,
+        g: 161,
+        b: 80,
+    }
+}
+
 const frog = {
 
     // The frog's body has a position and size
@@ -28,9 +39,10 @@ const frog = {
         y: 350,
         size: 50,
         startSize: 50,
+        maxSize: 1200,
         state: "idle",
         speed: 20,
-
+        onPad: false,
 
         direction: {
             x: undefined,
@@ -99,6 +111,7 @@ function setup() {
     resetFly(false, false);
 }
 
+//calls functions based on what state the game is in (title screen, playing the game, or game over)
 function draw() {
     background("#87ceeb");
 
@@ -107,6 +120,7 @@ function draw() {
         drawTitle();
     }
     else if (screen === "game") {
+        drawLilyPad();
         moveFrog();
         moveTongue();
         drawFrog();
@@ -114,10 +128,11 @@ function draw() {
         drawFly();
         drawScore();
 
+
         checkTongueFlyOverlap();
+        checkTonguePadOverlap();
     }
     else if (screen === "gameover") {
-
         drawFrog();
         drawGameover();
     }
@@ -163,6 +178,55 @@ function startGame() {
 }
 
 /**
+ * Resets the fly to the left with a random y
+ */
+function resetFly(flyWasEaten, flyWasMissed) {
+
+    if (flyWasEaten) {
+        score += 1;
+        if (frog.body.size < frog.body.maxSize) {
+            frog.body.size += 25;
+        }
+
+    }
+    else if (flyWasMissed) {
+        if (frog.body.size === frog.body.startSize) {
+            screen = "gameover";
+        }
+        else {
+            frog.body.size = frog.body.startSize;
+        }
+
+    }
+
+
+    fly.spawn = random(0, 10.1);
+    if (fly.spawn <= 5) {
+        fly.x = width;
+    }
+    else {
+        fly.x = 0;
+    }
+
+    fly.speed.x = random(fly.speed.x - fly.speed.variation, fly.speed.x + fly.speed.variation);
+
+    fly.y = random(0, height);
+    //if fly is on top of screen
+    if (fly.y <= 100) {
+        fly.speed.y = random(0, 0.5);
+    }
+    //if fly is on bottom of screen
+    else if (fly.y >= 600) {
+        fly.speed.y = random(-0.5, 0);
+    }
+    //fly is somewhere in the middle of the screen
+    else {
+        fly.speed.y = random(-0.5, 0.5);
+    }
+
+}
+
+/**
  * Moves the fly according to its speed
  * Resets the fly if it gets all the way to the right
  */
@@ -204,58 +268,9 @@ function drawFly() {
 }
 
 /**
- * Resets the fly to the left with a random y
- */
-function resetFly(flyWasEaten, flyWasMissed) {
-
-    if (flyWasEaten) {
-        score += 1;
-        frog.body.size += 25;
-    }
-    else if (flyWasMissed) {
-        if (frog.body.size === frog.body.startSize) {
-            screen = "gameover";
-        }
-        else {
-            frog.body.size = frog.body.startSize;
-        }
-
-    }
-
-
-    fly.spawn = random(0, 10.1);
-    if (fly.spawn <= 5) {
-        fly.x = width;
-    }
-    else {
-        fly.x = 0;
-    }
-
-    fly.speed.x = random(fly.speed.x - fly.speed.variation, fly.speed.x + fly.speed.variation);
-
-    fly.y = random(0, height);
-    //if fly is on top of screen
-    if (fly.y <= 100) {
-        fly.speed.y = random(0, 0.5);
-    }
-    //if fly is on bottom of screen
-    else if (fly.y >= 600) {
-        fly.speed.y = random(-0.5, 0);
-    }
-    //fly is somewhere in the middle of the screen
-    else {
-        fly.speed.y = random(-0.5, 0.5);
-    }
-
-}
-
-/**
  * Moves the frog to the mouse position on x
  */
 function moveFrog() {
-    //frog.body.x = mouseX;
-
-
 
     if (frog.body.state === "idle") {
         frog.body.velocity.x = 0;
@@ -290,7 +305,7 @@ function moveTongue() {
         frog.tongue.x = frog.body.x;
         frog.tongue.y = frog.body.y;
     }
-
+    //once the tongue reaches a wall, it stops moving and the body calculates direction towards it & then moves towards it.
     if (frog.tongue.state === "stuck") {
         frog.tongue.velocity.y = 0;
         frog.tongue.velocity.x = 0;
@@ -299,14 +314,15 @@ function moveTongue() {
     }
 
 
-    // If the tongue is outbound, it moves up
+    // If the tongue is outbound, it in the direction of the location the mouse was clicked
     else if (frog.tongue.state === "outbound") {
 
         frog.tongue.y += frog.tongue.velocity.y * frog.tongue.speed;
         frog.tongue.x += frog.tongue.velocity.x * frog.tongue.speed;
 
 
-        // The tongue bounces back if it hits the borders
+        // The tongue gets stuck to the wall if it's center hits the borders, and is forcefully repositioned to the border 
+        //(previously it was going past without consistency)
         if (frog.tongue.y - frog.tongue.size / 2 <= 0) {
             frog.tongue.state = "stuck";
             frog.tongue.y = frog.tongue.size / 2
@@ -323,23 +339,21 @@ function moveTongue() {
             frog.tongue.state = "stuck";
             frog.tongue.x = width - frog.tongue.size / 2
         }
-
-
     }
-    // If the tongue is inbound, it moves down
-    // else if (frog.tongue.state === "inbound") {
-    //     frog.tongue.y -= frog.tongue.velocity.y * frog.tongue.speed;
-    //     frog.tongue.x -= frog.tongue.velocity.x * frog.tongue.speed;
+}
 
-    //     // The tongue stops if it hits the bottom
-    //     if (frog.tongue.y >= height) {
-    //         frog.tongue.state = "idle";
-    //     }
-    // }
+function drawLilyPad() {
+    push();
+    fill(lilyPad.fill.r, lilyPad.fill.g, lilyPad.fill.b);
+    noStroke();
+    arc(lilyPad.x, lilyPad.y, lilyPad.size, lilyPad.size, HALF_PI, 2.25 * PI);
+    pop();
+
+
 }
 
 /**
- * Displays the tongue (tip and line connection) and the frog (body)
+ * Displays the tongue (tip and line connection), the frog (body), and the frogs eyes when in the gameover screen
  */
 function drawFrog() {
 
@@ -375,9 +389,8 @@ function drawFrog() {
 
 }
 
-
 /**
- * Handles the tongue overlapping the fly
+ * Handles the tongue overlapping the fly & eating the fly
  */
 function checkTongueFlyOverlap() {
     // Get distance from tongue to fly
@@ -390,8 +403,28 @@ function checkTongueFlyOverlap() {
     }
 }
 
+function checkTonguePadOverlap() {
+    // Get distance from tongue to lily pad
+    const d = dist(frog.tongue.x, frog.tongue.y, lilyPad.x, lilyPad.y);
+    // Check if it's an overlap
+    const landed = (d < frog.tongue.size / 2 + lilyPad.size / 2);
+
+    if (frog.body.x === lilyPad.x && frog.body.y === lilyPad.y) {
+        frog.onPad = true;
+    }
+    else {
+        frog.onPad = false;
+    }
+
+    if (frog.onPad === false && frog.tongue.state === "outbound" && landed) {
+        frog.tongue.state = "stuck";
+        frog.tongue.y = lilyPad.y;
+        frog.tongue.x = lilyPad.x;
+    }
+}
+
 /**
- * Launch the tongue on click (if it's not launched yet)
+ * Starts the game when in title or death screen, and launches the tongue on click (if it's not launched yet) when in the game screen
  */
 
 function mousePressed() {
@@ -410,6 +443,8 @@ function mousePressed() {
     }
 }
 
+//calculates direction from one location to another (tongue to mouse location or frog body to tongue location) based on what is input.\
+//changes body part state to initiate movement once direction is calculated.
 function calculateDirection(bodyPart, target) {
 
     if (bodyPart.state === "idle") {
@@ -425,11 +460,9 @@ function calculateDirection(bodyPart, target) {
 
         bodyPart.state = "outbound";
     }
-    //buffer movement inputs so you can set your next direction while still moving
-    else if (bodyPart.state === "outbound") {
-
-    }
 }
+
+//draws current amount of flies eaten in the bottom right corner
 function drawScore() {
     push();
     textSize(25);
@@ -437,5 +470,4 @@ function drawScore() {
     text("flies eaten:", 550, 650);
     text(score, 650, 650);
     pop();
-
 }

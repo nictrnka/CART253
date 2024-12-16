@@ -19,6 +19,7 @@
 
 let screen = "title"
 let score = 0;
+let highscore = 0;
 
 const lilyPad = {
     size: 80,
@@ -128,7 +129,7 @@ function draw() {
         moveFly();
         drawFly();
         drawScore();
-
+        hungryText();
 
         checkTongueFlyOverlap();
         checkTonguePadOverlap();
@@ -137,36 +138,34 @@ function draw() {
         drawFrog();
         drawGameover();
     }
-
 }
 
 function drawTitle() {
 
     push();
     textAlign(CENTER, CENTER);
-    textSize(100);
-    text('FROGGER 3D', width / 2, height / 3);
+    textSize(25);
+    text('PETIT DÉJEUNER GRENOUILLE', width / 2, height / 2.25);
     pop();
 
     push();
     textAlign(CENTER, CENTER);
-    textSize(75);
-    text('CLICK 2 START', width / 2, height / 2);
+    textSize(25);
+    text('cliquez pour commencer', width / 2, height / 2);
     pop();
 }
 
 function drawGameover() {
     push();
     textAlign(CENTER, CENTER);
-    textSize(90);
-    text('YOU STARVED!!', width / 2, height / 3);
+    textSize(25);
+    text('TU ES AFFAMÉ!', 350, 280);
+    text('RECORD:', 350, 420);
+    text(highscore, 460, 420);
+    text('cliquez pour recommencer', 350, 450);
     pop();
 
-    push();
-    textAlign(CENTER, CENTER);
-    textSize(75);
-    text('CLICK 2 RESET', width / 2, height / 2);
-    pop();
+
 }
 
 function startGame() {
@@ -185,6 +184,9 @@ function resetFly(flyWasEaten, flyWasMissed) {
 
     if (flyWasEaten) {
         score += 1;
+        if (score > highscore) {
+            highscore = score;
+        }
         if (frog.body.size < frog.body.maxSize) {
             frog.body.size += 25;
         }
@@ -199,7 +201,6 @@ function resetFly(flyWasEaten, flyWasMissed) {
         }
 
     }
-
 
     fly.spawn = random(0, 10.1);
     if (fly.spawn <= 5) {
@@ -223,6 +224,18 @@ function resetFly(flyWasEaten, flyWasMissed) {
     //fly is somewhere in the middle of the screen
     else {
         fly.speed.y = random(-0.5, 0.5);
+    }
+
+}
+
+function hungryText() {
+
+    if (frog.body.size === frog.body.startSize) {
+        push();
+        textAlign(CENTER, CENTER);
+        textSize(25);
+        text("la grenouille a faim!", 350, 420);
+        pop();
     }
 
 }
@@ -349,8 +362,6 @@ function drawLilyPad() {
     noStroke();
     arc(lilyPad.x, lilyPad.y, lilyPad.size, lilyPad.size, HALF_PI, 2.25 * PI);
     pop();
-
-
 }
 
 /**
@@ -384,6 +395,7 @@ function drawFrog() {
         push();
         textAlign(CENTER, CENTER);
         textSize(20);
+        fill(lilyPad.fill.r, lilyPad.fill.g, lilyPad.fill.b);
         text("XX", frog.body.x, frog.body.y);
         pop();
     }
@@ -468,7 +480,7 @@ function drawScore() {
     push();
     textSize(25);
     textAlign(CENTER, CENTER);
-    text("flies eaten:", 550, 650);
+    text("mouches mangées:", 520, 650);
     text(score, 650, 650);
     pop();
 }

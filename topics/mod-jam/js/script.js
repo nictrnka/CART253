@@ -93,6 +93,7 @@ const fly = {
         x: 3,
         y: 0.2,
         variation: 0.5,
+        multiplier: 0,
     }
 };
 
@@ -170,10 +171,12 @@ function drawGameover() {
 
 function startGame() {
     score = 0;
+    fly.speed.multiplier = 0;
     frog.body.state = "idle";
     frog.tongue.state = "idle";
     frog.body.x = 350;
     frog.body.y = 350;
+
     screen = "game";
 }
 
@@ -189,6 +192,7 @@ function resetFly(flyWasEaten, flyWasMissed) {
         }
         if (frog.body.size < frog.body.maxSize) {
             frog.body.size += 25;
+            fly.speed.multiplier += 0.05;
         }
 
     }
@@ -198,6 +202,7 @@ function resetFly(flyWasEaten, flyWasMissed) {
         }
         else {
             frog.body.size = frog.body.startSize;
+            fly.speed.multiplier = 0;
         }
 
     }
@@ -211,6 +216,7 @@ function resetFly(flyWasEaten, flyWasMissed) {
     }
 
     fly.speed.x = random(fly.speed.originalX - fly.speed.variation, fly.speed.originalX + fly.speed.variation);
+    fly.speed.x += fly.speed.multiplier;
 
     fly.y = random(0, height);
     //if fly is on top of screen

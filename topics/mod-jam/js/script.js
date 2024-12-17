@@ -17,7 +17,7 @@
 
 
 
-let screen = "title"
+let screen = "title" // Screen can be: title, game, gameover
 let score = 0;
 let highscore = 0;
 
@@ -156,9 +156,11 @@ function drawGameover() {
     textAlign(CENTER, CENTER);
     textSize(25);
     text('TU ES AFFAMÉ!', 350, 280);
-    text('RECORD:', 350, 420);
-    text(highscore, 460, 420);
-    text('cliquez pour recommencer', 350, 450);
+    text('score:', 350, 420);
+    text(score, 460, 420);
+    text('highscore:', 350, 450);
+    text(highscore, 460, 450);
+    text('cliquez pour recommencer', 350, 480);
     pop();
 
 

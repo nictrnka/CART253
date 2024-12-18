@@ -2,12 +2,15 @@
  * PETIT DÉJEUNER GRENOUILLE
  * Nic Trnka
  * 
- * A game of catching flies with your frog-tongue
+ * A game about a frog eating breakfast
  * 
  * Instructions:
- * - Move the frog with your mouse
- * - Click to launch the tongue
- * - Catch flies
+ * - Click to start the game
+ * - Click to launch the frog's tongue in the direction of the mouse
+ * - The frog will follow the tongue once it has stuck to a wall or the lilypad
+ * - Catch flies to grow bigger & get a high score
+ * - If you miss a fly, the frog will shrink to it's original size, and starve if it is already small
+ * - Click to restart the game if you lose
  * 
  * Made with p5
  * https://p5js.org/
@@ -15,16 +18,18 @@
 
 "use strict";
 
-
-
 let screen = "title" // Screen can be: title, game, gameover
-let score = 0;
-let highscore = 0;
+let score = 0; // score goes up 1 with each fly you catch
+let highscore = 0; // highscore is updated when score > highscore
 
+// A lilypad that the frog can jump on
 const lilyPad = {
+    // lilypad's size
     size: 80,
+    // lilypad's location
     x: 350,
     y: 350,
+    // lilypad's color
     fill: {
         r: 0,
         g: 161,
@@ -37,25 +42,23 @@ const frog = {
 
     // The frog's body has a position and size
     body: {
+        //frogs position, which starts here and gets updated
         x: 350,
         y: 350,
-        size: 50,
-        startSize: 50,
-        maxSize: 1200,
-        state: "idle",
-        speed: 20,
-        onPad: false,
+        size: 50, // frog's size, which grows and shrinks
+        startSize: 50, // frog starts at this size
+        maxSize: 1200, // frog will not grow bigger than this
+        state: "idle", // state can be: idle, outbound
+        speed: 20, // frog's speed
+        onPad: false, // bool for whether frog is already on lilypad or not, for the tongue's functions
 
+        // the direction that the frog will move towards (based on tongue position)
         direction: {
             x: undefined,
             y: undefined,
-
         },
+        // the frog's velocity gets direction input, then * speed = frog movement
         velocity: {
-            x: undefined,
-            y: undefined,
-        },
-        storedVelocity: {
             x: undefined,
             y: undefined,
         }
@@ -63,18 +66,19 @@ const frog = {
     // The frog's tongue has a position, size, speed, and state
     tongue: {
 
-        x: undefined,
+        x: undefined, //
         y: 480,
 
-        size: 20,
-        speed: 20,
+        size: 20, // tongue size
+        speed: 20, // tongue speed
         // Determines how the tongue moves each frame
         state: "idle", // State can be: idle, outbound, inbound
+        // the direction that the tongue will move towards (based on mouse position)
         direction: {
             x: undefined,
             y: undefined,
-
         },
+        // the tongue's velocity gets direction input, then * speed = tongue movement
         velocity: {
             x: undefined,
             y: undefined,
@@ -85,25 +89,24 @@ const frog = {
 // Our fly
 // Has a position, size, and speed of horizontal movement
 const fly = {
-    x: 0, //will be either 0 or width
+    x: 0, // will be either 0 or width, depending on spawn choice
     y: 200, // Will be random
-    spawn: undefined, // will be random
-    size: 10,
+    spawn: undefined, // will be random between 0 & 10, < 5 = spawn on right, else spawn on left
+    size: 10, // fly size
     speed: {
         originalX: 3, //base speed to be manipulated by variation and multiplier
-        x: 3,
-        y: 0.2, // vertical speed, either + or - 
+        x: 3, // current speed after manipulation
+        y: 0.2, // vertical speed, either up or down 
         variation: 0.5, // speed gets changed by + or - this amount each time a fly spawns
         multiplier: 0, // will increment 0.05 each time you eat a fly
     }
 };
 
+// for use in calculateDirection, the target is either the mouse position or the tongue position
 let target = {
     x: undefined,
     y: undefined,
 }
-
-const time = 0.2
 
 /**
  * Creates the canvas and initializes the fly
@@ -111,38 +114,44 @@ const time = 0.2
 function setup() {
     createCanvas(700, 700);
 
-    // Give the fly its first random position
+    // Give the fly its first random position, saying it was not eaten & not missed by the frog
     resetFly(false, false);
 }
 
-//calls functions based on what state the game is in (title screen, playing the game, or game over)
+/**
+ * Calls functions every frame based on what state the game is in (title screen, playing the game, or game over)
+ */
 function draw() {
     background("#87ceeb");
 
+    // the functions for the title screen (also in mouse input function)
     if (screen === "title") {
-        drawTitle();
+        drawTitle(); // draws the title
     }
+    // the functions for the game screen, handles all movement & drawing
     else if (screen === "game") {
-        drawLilyPad();
-        moveFrog();
-        moveTongue();
-        drawFrog();
-        moveFly();
-        drawFly();
-        drawScore();
-        hungryText();
+        drawLilyPad(); // draws the lily pad
+        moveFrog(); // handles frog movement
+        moveTongue(); // handles tongue movement
+        drawFrog(); // draws the frog
+        moveFly(); // handles fly movement
+        drawFly(); // draws the fly
+        drawScore(); // draws current amount of flies eaten
+        hungryText(); // draws text saying the frog is hungry if it is small
 
-        checkTongueFlyOverlap();
-        checkTonguePadOverlap();
+        checkTongueFlyOverlap(); // checks if the tongue overlaps a fly & handles eating & resetting the fly
+        checkTonguePadOverlap(); // checks if the tongue overlaps the lily pad so the frog can land on it
     }
+    // the function for the gameover screen (also in mouse input function)
     else if (screen === "gameover") {
-        drawFrog();
-        drawGameover();
+        drawFrog(); // draws the frog, but with x's for eyes
+        drawGameover(); // draws gameover text & scores
     }
 }
-
+/**
+ * Draws the title & gives instructions to click to start
+ */
 function drawTitle() {
-
     push();
     textAlign(CENTER, CENTER);
     textSize(25);
@@ -150,7 +159,9 @@ function drawTitle() {
     text('cliquez pour commencer', width / 2, height / 2);
     pop();
 }
-
+/**
+ * Draws text saying you starved, score & highscore, and instructions to click to restart
+ */
 function drawGameover() {
     push();
     textAlign(CENTER, CENTER);
@@ -162,10 +173,11 @@ function drawGameover() {
     text(highscore, 460, 450);
     text('cliquez pour recommencer', 350, 480);
     pop();
-
-
 }
 
+/**
+ * Resets all necessary variables to starting states & changes the screen state to the game
+ */
 function startGame() {
     score = 0;
     fly.speed.multiplier = 0;
@@ -178,33 +190,36 @@ function startGame() {
 }
 
 /**
- * Resets the fly to the left with a random y
+ * Resets the fly to the left or right (randomly) with a random y
+ * Gives the fly random variation to both it's x & y speed, and increases fly speed with each fly eaten
+ * Handles score calculation, frog size changes, and ends the game if you miss a fly when the frog is small
+ * Takes bools for whether the last fly was eaten or if it touched a border
  */
 function resetFly(flyWasEaten, flyWasMissed) {
-
+    // handles score, fly speed & frog size if the last fly was eaten
     if (flyWasEaten) {
         score += 1;
-        if (score > highscore) {
+        if (score > highscore) { //increases the session's highscore if the player reaches a new highscore
             highscore = score;
         }
-        if (frog.body.size < frog.body.maxSize) {
+        if (frog.body.size < frog.body.maxSize) { //grows the frog if it is smaller than it's max size, and increases fly speed
             frog.body.size += 25;
             fly.speed.multiplier += 0.05;
         }
-
     }
+    // handles game loss, fly speed, & frog size if the last fly made it to a border
     else if (flyWasMissed) {
-        if (frog.body.size === frog.body.startSize) {
+        if (frog.body.size === frog.body.startSize) { // ends the game if a fly was missed while the frog is at it's starting size
             screen = "gameover";
         }
-        else {
+        else { // if the frog was not at it's starting size, shrinks the frog to it's starting size and resets the flies' speed increase to starting speed
             frog.body.size = frog.body.startSize;
             fly.speed.multiplier = 0;
         }
 
     }
 
-    fly.spawn = random(0, 10.1);
+    fly.spawn = random(0, 10.1); // a random number to determine if the fly spawns on the left or the right
     if (fly.spawn <= 5) {
         fly.x = width;
     }
@@ -212,19 +227,20 @@ function resetFly(flyWasEaten, flyWasMissed) {
         fly.x = 0;
     }
 
-    fly.speed.x = random(fly.speed.originalX - fly.speed.variation, fly.speed.originalX + fly.speed.variation);
-    fly.speed.x += fly.speed.multiplier;
+    fly.speed.x = random(fly.speed.originalX - fly.speed.variation, fly.speed.originalX + fly.speed.variation); // fly speed can be slower or faster by 0.5
+    fly.speed.x += fly.speed.multiplier; // fly speed gets faster with each fly eaten in a row
 
-    fly.y = random(0, height);
-    //if fly is on top of screen
+    fly.y = random(0, height); // the fly's starting y position is randomly chosen
+
+    //if fly spawns on top of screen, it can't go up to create an unfair position
     if (fly.y <= 100) {
         fly.speed.y = random(0, 0.5);
     }
-    //if fly is on bottom of screen
+    //if fly spawns on bottom of screen, it can't go down
     else if (fly.y >= 600) {
         fly.speed.y = random(-0.5, 0);
     }
-    //fly is somewhere in the middle of the screen
+    //fly spawns somewhere in the middle of the screen, it can go either up or down
     else {
         fly.speed.y = random(-0.5, 0.5);
     }

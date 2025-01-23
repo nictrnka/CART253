@@ -9,7 +9,7 @@
 "use strict";
 
 let paddle = {
-    width: 50,
+    width: 75,
     height: 10,
     x: 300,
     y: 550,
@@ -30,6 +30,7 @@ let paddle = {
 }
 
 let ball = {
+    alive: true,
     width: 10,
     height: 10,
     x: 300,
@@ -39,11 +40,13 @@ let ball = {
     g: 100,
     b: 100,
 
-    velocity: 0,
-    speed: {
-        x: 10,
-        y: 10,
-    }
+    velocity: {
+        x: 0,
+        y: 0,
+    },
+
+    speed: 5,
+
 }
 
 
@@ -55,6 +58,7 @@ let ball = {
 function setup() {
     createCanvas(600, 600);
     background(0);
+    spawnBall();
 }
 
 /**
@@ -62,13 +66,23 @@ function setup() {
 */
 function draw() {
     drawBackground();
+
     movePaddle();
     drawPaddle();
+
+    ballCollisions();
+    moveBall();
     drawBall();
 }
 
 function drawBackground() {
     background(0);
+}
+
+function spawnBall() {
+    ball.alive = true;
+    ball.velocity.x = random(-1, 1.1);
+    ball.velocity.y = 1;
 }
 
 function movePaddle() {
@@ -97,12 +111,39 @@ function drawPaddle() {
     pop();
 }
 
+function ballCollisions() {
+
+    if (ball.alive === true) {
+        if (ball.y - ball.height / 2 < 0) {
+            ball.velocity.y *= -1;
+        }
+        if (ball.x - ball.width / 2 < 0 || ball.x + ball.width / 2 > width) {
+            ball.velocity.x *= -1;
+        }
+
+        if (ball.y + ball.height / 2 > paddle.y - paddle.height / 2 && ball.x > paddle.x - paddle.width / 2 && ball.x < paddle.x + paddle.width / 2) {
+            ball.velocity.y *= -1;
+            ball.velocity.x += paddle.velocity / 2;
+        }
+        else if (ball.y + ball.height / 2 > paddle.y - paddle.height / 2) {
+            ball.alive = false;
+        }
+    }
+
+}
+
+function moveBall() {
+    ball.x += ball.velocity.x * ball.speed;
+    ball.y += ball.velocity.y * ball.speed;
+}
+
 function drawBall() {
     push();
     fill(ball.r, ball.g, ball.b);
     rectMode(CENTER);
     rect(ball.x, ball.y, ball.width, ball.height);
 }
+
 
 
 

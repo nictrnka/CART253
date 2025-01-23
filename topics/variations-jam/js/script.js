@@ -33,6 +33,12 @@ let ball = {
     alive: true,
     width: 10,
     height: 10,
+
+    spawn: {
+        x: 300,
+        y: 300,
+    },
+
     x: 300,
     y: 300,
 
@@ -79,8 +85,17 @@ function drawBackground() {
     background(0);
 }
 
+function keyPressed() {
+
+    if (key === 'r' && ball.alive === false) {
+        spawnBall();
+    }
+}
+
 function spawnBall() {
     ball.alive = true;
+    ball.x = ball.spawn.x;
+    ball.y = ball.spawn.y;
     ball.velocity.x = random(-1, 1.1);
     ball.velocity.y = 1;
 }

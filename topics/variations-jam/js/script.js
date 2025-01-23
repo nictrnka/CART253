@@ -18,6 +18,12 @@ let paddle = {
     g: 100,
     b: 100,
 
+    hitbox: {
+        top: undefined,
+        left: undefined,
+        right: undefined,
+    },
+
     velocity: 0,
     speed: 10,
 
@@ -39,6 +45,7 @@ let ball = {
         y: 10,
     }
 }
+
 
 
 
@@ -69,10 +76,10 @@ function movePaddle() {
     if (keyIsDown(65) && keyIsDown(68)) {
         paddle.velocity = 0;
     }
-    else if (keyIsDown(65)) {
+    else if (keyIsDown(65) && paddle.x - paddle.width / 2 > 0) {
         paddle.velocity = -1;
     }
-    else if (keyIsDown(68)) {
+    else if (keyIsDown(68) && paddle.x + paddle.width / 2 < width) {
         paddle.velocity = 1;
     }
     else {

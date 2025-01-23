@@ -49,13 +49,23 @@ let ball = {
     velocity: {
         x: 0,
         y: 0,
+        max: 2,
     },
 
     speed: 5,
-
 }
 
+let brick = {
+    health: 3,
+    width: 75,
+    height: 50,
+    x: 0,
+    y: 0,
 
+    r: 100,
+    g: 100,
+    b: 100,
+}
 
 
 /**
@@ -138,7 +148,12 @@ function ballCollisions() {
 
         if (ball.y + ball.height / 2 > paddle.y - paddle.height / 2 && ball.x > paddle.x - paddle.width / 2 && ball.x < paddle.x + paddle.width / 2) {
             ball.velocity.y *= -1;
-            ball.velocity.x += paddle.velocity / 2;
+
+            if (ball.velocity.x < ball.velocity.max && ball.velocity.x > -ball.velocity.max) {
+                ball.velocity.x += paddle.velocity / 2;
+            }
+
+
         }
         else if (ball.y + ball.height / 2 > paddle.y - paddle.height / 2) {
             ball.alive = false;

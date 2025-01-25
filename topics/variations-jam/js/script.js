@@ -18,12 +18,6 @@ let paddle = {
     g: 100,
     b: 100,
 
-    hitbox: {
-        top: undefined,
-        left: undefined,
-        right: undefined,
-    },
-
     velocity: 0,
     speed: 10,
 
@@ -57,14 +51,14 @@ let ball = {
 
 let brick = {
     health: 3,
-    width: 75,
-    height: 50,
-    x: 0,
-    y: 0,
+    width: 200,
+    height: 100,
+    x: 300,
+    y: 100,
 
     r: 100,
     g: 100,
-    b: 100,
+    b: 200,
 }
 
 
@@ -81,14 +75,20 @@ function setup() {
  * OOPS I DIDN'T DESCRIBE WHAT MY DRAW DOES!
 */
 function draw() {
+    frameRate(120);
+
     drawBackground();
 
     movePaddle();
     drawPaddle();
 
+    drawBrick();
+
     ballCollisions();
     moveBall();
     drawBall();
+
+
 }
 
 function drawBackground() {
@@ -138,15 +138,35 @@ function drawPaddle() {
 
 function ballCollisions() {
 
+    //ball & border collisions
     if (ball.alive === true) {
-        if (ball.y - ball.height / 2 < 0) {
+        if (ball.y - ball.height / 2 <= 0) {
             ball.velocity.y *= -1;
         }
-        if (ball.x - ball.width / 2 < 0 || ball.x + ball.width / 2 > width) {
+        if (ball.x - ball.width / 2 <= 0 || ball.x + ball.width / 2 > width) {
+            ball.velocity.x *= -1;
+        }
+        //ball & brick collisions
+        //right side
+        if (ball.x - ball.width / 2 <= brick.x + brick.width / 2 && ball.x > brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
+            ball.velocity.x *= -1;
+        }
+        //left side
+        if (ball.x + ball.width / 2 >= brick.x - brick.width / 2 && ball.x < brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
             ball.velocity.x *= -1;
         }
 
-        if (ball.y + ball.height / 2 > paddle.y - paddle.height / 2 && ball.x > paddle.x - paddle.width / 2 && ball.x < paddle.x + paddle.width / 2) {
+        if (ball.y + ball.height / 2 === brick.y - brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
+            ball.velocity.y *= -1;
+        }
+        if (ball.y - ball.height / 2 === brick.y + brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
+            ball.velocity.y *= -1;
+        }
+
+
+
+        //ball & paddle collisions
+        if (ball.y + ball.height / 2 >= paddle.y - paddle.height / 2 && ball.x > paddle.x - paddle.width / 2 && ball.x < paddle.x + paddle.width / 2) {
             ball.velocity.y *= -1;
 
             if (ball.velocity.x < ball.velocity.max && ball.velocity.x > -ball.velocity.max) {
@@ -158,6 +178,8 @@ function ballCollisions() {
         else if (ball.y + ball.height / 2 > paddle.y - paddle.height / 2) {
             ball.alive = false;
         }
+
+
     }
 
 }
@@ -167,12 +189,22 @@ function moveBall() {
     ball.y += ball.velocity.y * ball.speed;
 }
 
+function drawBrick() {
+    push();
+    fill(brick.r, brick.g, brick.b);
+    rectMode(CENTER);
+    rect(brick.x, brick.y, brick.width, brick.height);
+    pop();
+}
+
 function drawBall() {
     push();
     fill(ball.r, ball.g, ball.b);
     rectMode(CENTER);
     rect(ball.x, ball.y, ball.width, ball.height);
 }
+
+
 
 
 

@@ -8,15 +8,21 @@
 
 "use strict";
 
+let backGround = {
+    r: 36,
+    g: 46,
+    b: 54,
+}
+
 let paddle = {
     width: 75,
     height: 10,
     x: 300,
     y: 550,
 
-    r: 100,
-    g: 100,
-    b: 100,
+    r: 161,
+    g: 176,
+    b: 190,
 
     velocity: 0,
     speed: 10,
@@ -35,9 +41,9 @@ let ball = {
     x: 300,
     y: 300,
 
-    r: 200,
-    g: 100,
-    b: 100,
+    r: 183,
+    g: 99,
+    b: 91,
 
     velocity: {
         x: 0,
@@ -56,9 +62,9 @@ let bricks = [
         x: 450,
         y: 100,
 
-        r: 100,
-        g: 100,
-        b: 200,
+        r: 0,
+        g: 0,
+        b: 0,
     },
     {
         health: 3,
@@ -67,11 +73,30 @@ let bricks = [
         x: 150,
         y: 100,
 
-        r: 100,
-        g: 200,
-        b: 100,
+        r: 0,
+        g: 0,
+        b: 0,
     }
 ]
+
+let brickColors = {
+    three: {
+        r: 201,
+        g: 165,
+        b: 169,
+    },
+    two: {
+        r: 149,
+        g: 129,
+        b: 157,
+    },
+    one: {
+        r: 89,
+        g: 91,
+        b: 124,
+    }
+
+}
 
 
 
@@ -83,7 +108,7 @@ let bricks = [
 */
 function setup() {
     createCanvas(600, 600);
-    background(0);
+    background(backGround.r, backGround.g, backGround.b);
     spawnBall();
 }
 
@@ -103,8 +128,6 @@ function draw() {
     ballCollisions();
     moveBall();
     drawBall();
-
-
 }
 
 function drawBackground() {
@@ -186,6 +209,23 @@ function moveBall() {
 
 function drawBrick() {
     for (let brick of bricks) {
+
+        if (brick.health === 3) {
+            brick.r = brickColors.three.r;
+            brick.g = brickColors.three.g;
+            brick.b = brickColors.three.b;
+        }
+        else if (brick.health === 2) {
+            brick.r = brickColors.two.r;
+            brick.g = brickColors.two.g;
+            brick.b = brickColors.two.b;
+        }
+        else if (brick.health === 1) {
+            brick.r = brickColors.one.r;
+            brick.g = brickColors.one.g;
+            brick.b = brickColors.one.b;
+        }
+
         push();
         fill(brick.r, brick.g, brick.b);
         rectMode(CENTER);

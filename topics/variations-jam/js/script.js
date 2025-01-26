@@ -73,7 +73,7 @@ let bricks = [
     }
 ]
 
-let index = 0
+
 
 
 
@@ -197,7 +197,8 @@ function drawBrick() {
         if (ball.x - ball.width / 2 <= brick.x + brick.width / 2 && ball.x > brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
             ball.velocity.x *= -1;
             if (brick.health === 1) {
-
+                let index = bricks.indexOf(brick);
+                bricks.splice(index, 1);
             } else {
                 brick.health -= 1;
             }
@@ -206,14 +207,32 @@ function drawBrick() {
         //left side
         if (ball.x + ball.width / 2 >= brick.x - brick.width / 2 && ball.x < brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
             ball.velocity.x *= -1;
+            if (brick.health === 1) {
+                let index = bricks.indexOf(brick);
+                bricks.splice(index, 1);
+            } else {
+                brick.health -= 1;
+            }
         }
         //top side
         if (ball.y + ball.height / 2 === brick.y - brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
             ball.velocity.y *= -1;
+            if (brick.health === 1) {
+                let index = bricks.indexOf(brick);
+                bricks.splice(index, 1);
+            } else {
+                brick.health -= 1;
+            }
         }
         //bottom side
         if (ball.y - ball.height / 2 === brick.y + brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
             ball.velocity.y *= -1;
+            if (brick.health === 1) {
+                let index = bricks.indexOf(brick);
+                bricks.splice(index, 1);
+            } else {
+                brick.health -= 1;
+            }
         }
 
     }

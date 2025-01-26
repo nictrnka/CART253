@@ -20,7 +20,6 @@ let paddle = {
 
     velocity: 0,
     speed: 10,
-
 }
 
 let ball = {
@@ -49,17 +48,34 @@ let ball = {
     speed: 5,
 }
 
-let brick = {
-    health: 3,
-    width: 200,
-    height: 100,
-    x: 300,
-    y: 100,
+let bricks = [
+    {
+        health: 3,
+        width: 200,
+        height: 50,
+        x: 450,
+        y: 100,
 
-    r: 100,
-    g: 100,
-    b: 200,
-}
+        r: 100,
+        g: 100,
+        b: 200,
+    },
+    {
+        health: 3,
+        width: 200,
+        height: 50,
+        x: 150,
+        y: 100,
+
+        r: 100,
+        g: 200,
+        b: 100,
+    }
+]
+
+let index = 0
+
+
 
 
 /**
@@ -146,23 +162,6 @@ function ballCollisions() {
         if (ball.x - ball.width / 2 <= 0 || ball.x + ball.width / 2 > width) {
             ball.velocity.x *= -1;
         }
-        //ball & brick collisions
-        //right side
-        if (ball.x - ball.width / 2 <= brick.x + brick.width / 2 && ball.x > brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
-            ball.velocity.x *= -1;
-        }
-        //left side
-        if (ball.x + ball.width / 2 >= brick.x - brick.width / 2 && ball.x < brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
-            ball.velocity.x *= -1;
-        }
-
-        if (ball.y + ball.height / 2 === brick.y - brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
-            ball.velocity.y *= -1;
-        }
-        if (ball.y - ball.height / 2 === brick.y + brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
-            ball.velocity.y *= -1;
-        }
-
 
 
         //ball & paddle collisions
@@ -172,14 +171,10 @@ function ballCollisions() {
             if (ball.velocity.x < ball.velocity.max && ball.velocity.x > -ball.velocity.max) {
                 ball.velocity.x += paddle.velocity / 2;
             }
-
-
         }
         else if (ball.y + ball.height / 2 > paddle.y - paddle.height / 2) {
             ball.alive = false;
         }
-
-
     }
 
 }
@@ -190,11 +185,38 @@ function moveBall() {
 }
 
 function drawBrick() {
-    push();
-    fill(brick.r, brick.g, brick.b);
-    rectMode(CENTER);
-    rect(brick.x, brick.y, brick.width, brick.height);
-    pop();
+    for (let brick of bricks) {
+        push();
+        fill(brick.r, brick.g, brick.b);
+        rectMode(CENTER);
+        rect(brick.x, brick.y, brick.width, brick.height);
+        pop();
+
+        // ball & brick collisions
+        // right side
+        if (ball.x - ball.width / 2 <= brick.x + brick.width / 2 && ball.x > brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
+            ball.velocity.x *= -1;
+            if (brick.health === 1) {
+
+            } else {
+                brick.health -= 1;
+            }
+
+        }
+        //left side
+        if (ball.x + ball.width / 2 >= brick.x - brick.width / 2 && ball.x < brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
+            ball.velocity.x *= -1;
+        }
+        //top side
+        if (ball.y + ball.height / 2 === brick.y - brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
+            ball.velocity.y *= -1;
+        }
+        //bottom side
+        if (ball.y - ball.height / 2 === brick.y + brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
+            ball.velocity.y *= -1;
+        }
+
+    }
 }
 
 function drawBall() {

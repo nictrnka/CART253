@@ -1019,6 +1019,10 @@ function spawnGrid() {
 
         let brick = createBrick();
         bricks.push(brick);
+        if (brick.health === 0) {
+            let index = bricks.indexOf(brick);
+            bricks.splice(index, 1);
+        }
 
         if (gridIndex === 13 || gridIndex === 27 || gridIndex === 41 || gridIndex === 55 || gridIndex === 69 || gridIndex === 83 || gridIndex === 97 || gridIndex === 111 || gridIndex === 125 || gridIndex === 139 || gridIndex === 153 || gridIndex === 167) {
             tile.y = gridY + 20;
@@ -1044,10 +1048,8 @@ function createBrick() {
 
     let randomInt = int(random(0, 4));
 
-
-
     let brick = {
-        health: 3,
+        health: randomInt,
         width: 40,
         height: 20,
         x: gridX,

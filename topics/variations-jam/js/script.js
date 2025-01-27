@@ -1136,6 +1136,7 @@ function drawPaddle() {
     push();
     fill(paddle.r, paddle.g, paddle.b);
     rectMode(CENTER);
+    noStroke();
     rect(paddle.x, paddle.y, paddle.width, paddle.height);
     pop();
 }
@@ -1183,6 +1184,8 @@ function drawBrick() {
         push();
         fill(brick.r, brick.g, brick.b);
         rectMode(CENTER);
+        noStroke();
+
         rect(brick.x, brick.y, brick.width, brick.height);
         pop();
 
@@ -1281,6 +1284,7 @@ function drawBall() {
     push();
     fill(ball.r, ball.g, ball.b);
     rectMode(CENTER);
+    noStroke();
     rect(ball.x, ball.y, ball.width, ball.height);
 }
 

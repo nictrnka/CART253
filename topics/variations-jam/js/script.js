@@ -8,6 +8,10 @@
 
 "use strict";
 let polySynth;
+let synth = {
+    lastNote: 'C4',
+}
+
 let backGround = {
     r: 36,
     g: 46,
@@ -1048,6 +1052,9 @@ function playSynth(paddleHit) {
     userStartAudio();
 
     let note = random(['A4', 'B4', 'C#4', 'D#4', 'E4', 'F#4', 'G#4']);
+    while (note === synth.lastNote) {
+        note = random(['A4', 'B4', 'C#4', 'D#4', 'E4', 'F#4', 'G#4']);
+    }
 
     if (paddleHit === true) {
 
@@ -1061,6 +1068,7 @@ function playSynth(paddleHit) {
 
     polySynth.setADSR(0.3, [1], [1], [1]);
     polySynth.play(note, velocity, time, dur);
+    synth.lastNote = note;
 }
 
 function createBrick() {

@@ -54,29 +54,906 @@ let ball = {
     speed: 5,
 }
 
+let grid = [
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+    {
+        x: 40,
+        y: 30,
+
+    },
+
+
+
+
+
+
+
+]
+let gridIndex = 0
+let gridX = 40
+let gridY = 30
+
+let tiles = [
+    40,
+    80,
+    120,
+    160,
+    200,
+    240,
+    280,
+    320,
+    360,
+    400,
+    440,
+    480,
+    520,
+]
+let tilesY = [
+    30,
+    50,
+    70,
+    90,
+    110,
+    130,
+    150,
+    170,
+    190,
+    210,
+    230,
+    250,
+    270,
+    290,
+]
+
 let bricks = [
     {
-        health: 3,
-        width: 200,
-        height: 50,
-        x: 450,
-        y: 100,
+        health: 0,
+        width: 40,
+        height: 20,
+        x: 40,
+        y: 30,
 
         r: 0,
         g: 0,
         b: 0,
     },
-    {
-        health: 3,
-        width: 200,
-        height: 50,
-        x: 150,
-        y: 100,
 
-        r: 0,
-        g: 0,
-        b: 0,
-    }
 ]
 
 let brickColors = {
@@ -98,17 +975,13 @@ let brickColors = {
 
 }
 
-
-
-
-
-
 /**
  * OH LOOK I DIDN'T DESCRIBE SETUP!!
 */
 function setup() {
     createCanvas(600, 600);
-    background(backGround.r, backGround.g, backGround.b);
+    drawBackground();
+    spawnGrid();
     spawnBall();
 }
 
@@ -132,6 +1005,77 @@ function draw() {
 
 function drawBackground() {
     background(0);
+}
+
+function spawnGrid() {
+
+    // for (let tile of tiles)
+    // {
+    //     let gridSpace = createGridSpace();
+    //     tiles.push(gridSpace);
+    // }
+
+    for (let tile of grid) {
+
+        let brick = createBrick();
+        bricks.push(brick);
+
+        if (gridIndex === 13 || gridIndex === 27 || gridIndex === 41 || gridIndex === 55 || gridIndex === 69 || gridIndex === 83 || gridIndex === 97 || gridIndex === 111 || gridIndex === 125 || gridIndex === 139 || gridIndex === 153 || gridIndex === 167) {
+            tile.y = gridY + 20;
+            tile.x = 40;
+            gridX = tile.x;
+            gridY = tile.y;
+        }
+        else {
+            tile.x = gridX + 40;
+            gridX = tile.x;
+        }
+
+        console.log(gridX);
+        console.log(gridY);
+
+        gridIndex += 1;
+    }
+}
+function createGridSpace() {
+
+}
+function createBrick() {
+
+    let randomInt = int(random(0, 4));
+
+
+
+    let brick = {
+        health: 3,
+        width: 40,
+        height: 20,
+        x: gridX,
+        y: gridY,
+
+        r: 0,
+        g: 0,
+        b: 0,
+
+    };
+
+    if (brick.health === 3) {
+        brick.r = brickColors.three.r;
+        brick.g = brickColors.three.g;
+        brick.b = brickColors.three.b;
+    }
+    else if (brick.health === 2) {
+        brick.r = brickColors.two.r;
+        brick.g = brickColors.two.g;
+        brick.b = brickColors.two.b;
+    }
+    else if (brick.health === 1) {
+        brick.r = brickColors.one.r;
+        brick.g = brickColors.one.g;
+        brick.b = brickColors.one.b;
+    }
+
+    return brick;
 }
 
 function keyPressed() {
@@ -210,21 +1154,7 @@ function moveBall() {
 function drawBrick() {
     for (let brick of bricks) {
 
-        if (brick.health === 3) {
-            brick.r = brickColors.three.r;
-            brick.g = brickColors.three.g;
-            brick.b = brickColors.three.b;
-        }
-        else if (brick.health === 2) {
-            brick.r = brickColors.two.r;
-            brick.g = brickColors.two.g;
-            brick.b = brickColors.two.b;
-        }
-        else if (brick.health === 1) {
-            brick.r = brickColors.one.r;
-            brick.g = brickColors.one.g;
-            brick.b = brickColors.one.b;
-        }
+
 
         push();
         fill(brick.r, brick.g, brick.b);
@@ -241,6 +1171,17 @@ function drawBrick() {
                 bricks.splice(index, 1);
             } else {
                 brick.health -= 1;
+                if (brick.health === 2) {
+                    brick.r = brickColors.two.r;
+                    brick.g = brickColors.two.g;
+                    brick.b = brickColors.two.b;
+                }
+                else if (brick.health === 1) {
+                    brick.r = brickColors.one.r;
+                    brick.g = brickColors.one.g;
+                    brick.b = brickColors.one.b;
+                }
+
             }
 
         }
@@ -252,6 +1193,16 @@ function drawBrick() {
                 bricks.splice(index, 1);
             } else {
                 brick.health -= 1;
+                if (brick.health === 2) {
+                    brick.r = brickColors.two.r;
+                    brick.g = brickColors.two.g;
+                    brick.b = brickColors.two.b;
+                }
+                else if (brick.health === 1) {
+                    brick.r = brickColors.one.r;
+                    brick.g = brickColors.one.g;
+                    brick.b = brickColors.one.b;
+                }
             }
         }
         //top side
@@ -262,6 +1213,16 @@ function drawBrick() {
                 bricks.splice(index, 1);
             } else {
                 brick.health -= 1;
+                if (brick.health === 2) {
+                    brick.r = brickColors.two.r;
+                    brick.g = brickColors.two.g;
+                    brick.b = brickColors.two.b;
+                }
+                else if (brick.health === 1) {
+                    brick.r = brickColors.one.r;
+                    brick.g = brickColors.one.g;
+                    brick.b = brickColors.one.b;
+                }
             }
         }
         //bottom side
@@ -272,6 +1233,16 @@ function drawBrick() {
                 bricks.splice(index, 1);
             } else {
                 brick.health -= 1;
+                if (brick.health === 2) {
+                    brick.r = brickColors.two.r;
+                    brick.g = brickColors.two.g;
+                    brick.b = brickColors.two.b;
+                }
+                else if (brick.health === 1) {
+                    brick.r = brickColors.one.r;
+                    brick.g = brickColors.one.g;
+                    brick.b = brickColors.one.b;
+                }
             }
         }
 

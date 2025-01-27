@@ -7,7 +7,7 @@
  */
 
 "use strict";
-
+let polySynth;
 let backGround = {
     r: 36,
     g: 46,
@@ -41,9 +41,9 @@ let ball = {
     x: 300,
     y: 300,
 
-    r: 183,
-    g: 99,
-    b: 91,
+    r: 105,
+    g: 136,
+    b: 161,
 
     velocity: {
         x: 0,
@@ -946,8 +946,8 @@ let bricks = [
         health: 0,
         width: 40,
         height: 20,
-        x: 40,
-        y: 30,
+        x: undefined,
+        y: undefined,
 
         r: 0,
         g: 0,
@@ -983,6 +983,8 @@ function setup() {
     drawBackground();
     spawnGrid();
     spawnBall();
+
+    polySynth = new p5.PolySynth();
 }
 
 /**
@@ -1041,9 +1043,26 @@ function spawnGrid() {
         gridIndex += 1;
     }
 }
-function createGridSpace() {
 
+function playSynth(paddleHit) {
+    userStartAudio();
+
+    let note = random(['A4', 'B4', 'C#4', 'D#4', 'E4', 'F#4', 'G#4']);
+
+    if (paddleHit === true) {
+
+    }
+    // note velocity (volume, from 0 to 1)
+    let velocity = 1;
+    // time from now (in seconds)
+    let time = 0;
+    // note duration (in seconds)
+    let dur = 1 / 20;
+
+    polySynth.setADSR(0.3, [1], [1], [1]);
+    polySynth.play(note, velocity, time, dur);
 }
+
 function createBrick() {
 
     let randomInt = int(random(0, 4));
@@ -1127,15 +1146,18 @@ function ballCollisions() {
     if (ball.alive === true) {
         if (ball.y - ball.height / 2 <= 0) {
             ball.velocity.y *= -1;
+            playSynth();
         }
         if (ball.x - ball.width / 2 <= 0 || ball.x + ball.width / 2 > width) {
             ball.velocity.x *= -1;
+            playSynth();
         }
 
 
         //ball & paddle collisions
         if (ball.y + ball.height / 2 >= paddle.y - paddle.height / 2 && ball.x > paddle.x - paddle.width / 2 && ball.x < paddle.x + paddle.width / 2) {
             ball.velocity.y *= -1;
+            playSynth(true);
 
             if (ball.velocity.x < ball.velocity.max && ball.velocity.x > -ball.velocity.max) {
                 ball.velocity.x += paddle.velocity / 2;
@@ -1168,6 +1190,7 @@ function drawBrick() {
         // right side
         if (ball.x - ball.width / 2 <= brick.x + brick.width / 2 && ball.x > brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
             ball.velocity.x *= -1;
+            playSynth();
             if (brick.health === 1) {
                 let index = bricks.indexOf(brick);
                 bricks.splice(index, 1);
@@ -1190,6 +1213,7 @@ function drawBrick() {
         //left side
         if (ball.x + ball.width / 2 >= brick.x - brick.width / 2 && ball.x < brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
             ball.velocity.x *= -1;
+            playSynth();
             if (brick.health === 1) {
                 let index = bricks.indexOf(brick);
                 bricks.splice(index, 1);
@@ -1210,6 +1234,7 @@ function drawBrick() {
         //top side
         if (ball.y + ball.height / 2 === brick.y - brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
             ball.velocity.y *= -1;
+            playSynth();
             if (brick.health === 1) {
                 let index = bricks.indexOf(brick);
                 bricks.splice(index, 1);
@@ -1230,6 +1255,7 @@ function drawBrick() {
         //bottom side
         if (ball.y - ball.height / 2 === brick.y + brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
             ball.velocity.y *= -1;
+            playSynth();
             if (brick.health === 1) {
                 let index = bricks.indexOf(brick);
                 bricks.splice(index, 1);

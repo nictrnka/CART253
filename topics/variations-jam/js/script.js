@@ -22,7 +22,7 @@ let paddle = {
     width: 75,
     height: 10,
     x: 300,
-    y: 550,
+    y: 575,
 
     r: 161,
     g: 176,
@@ -1051,6 +1051,7 @@ function spawnGrid() {
 function playSynth(paddleHit) {
     userStartAudio();
 
+
     let note = random(['A4', 'B4', 'C#4', 'D#4', 'E4', 'F#4', 'G#4']);
     while (note === synth.lastNote) {
         note = random(['A4', 'B4', 'C#4', 'D#4', 'E4', 'F#4', 'G#4']);
@@ -1190,6 +1191,7 @@ function drawBrick() {
 
 
         push();
+
         fill(brick.r, brick.g, brick.b);
         rectMode(CENTER);
         noStroke();
@@ -1199,13 +1201,10 @@ function drawBrick() {
 
         // ball & brick collisions
         // right side
-        if (ball.x - ball.width / 2 <= brick.x + brick.width / 2 && ball.x > brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
-            ball.velocity.x *= -1;
-            playSynth();
-            if (brick.health === 1) {
-                let index = bricks.indexOf(brick);
-                bricks.splice(index, 1);
-            } else {
+        if (brick.health !== 0) {
+            if (ball.x - ball.width / 2 <= brick.x + brick.width / 2 && ball.x > brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
+                ball.velocity.x *= -1;
+                playSynth();
                 brick.health -= 1;
                 if (brick.health === 2) {
                     brick.r = brickColors.two.r;
@@ -1217,18 +1216,17 @@ function drawBrick() {
                     brick.g = brickColors.one.g;
                     brick.b = brickColors.one.b;
                 }
+                else if (brick.health === 0) {
+                    brick.r = 0;
+                    brick.g = 0;
+                    brick.b = 0;
+                }
+            }
+            //left side
+            if (ball.x + ball.width / 2 >= brick.x - brick.width / 2 && ball.x < brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
+                ball.velocity.x *= -1;
+                playSynth();
 
-            }
-
-        }
-        //left side
-        if (ball.x + ball.width / 2 >= brick.x - brick.width / 2 && ball.x < brick.x && ball.y < brick.y + brick.height / 2 && ball.y > brick.y - brick.height / 2) {
-            ball.velocity.x *= -1;
-            playSynth();
-            if (brick.health === 1) {
-                let index = bricks.indexOf(brick);
-                bricks.splice(index, 1);
-            } else {
                 brick.health -= 1;
                 if (brick.health === 2) {
                     brick.r = brickColors.two.r;
@@ -1240,16 +1238,16 @@ function drawBrick() {
                     brick.g = brickColors.one.g;
                     brick.b = brickColors.one.b;
                 }
+                else if (brick.health === 0) {
+                    brick.r = 0;
+                    brick.g = 0;
+                    brick.b = 0;
+                }
             }
-        }
-        //top side
-        if (ball.y + ball.height / 2 === brick.y - brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
-            ball.velocity.y *= -1;
-            playSynth();
-            if (brick.health === 1) {
-                let index = bricks.indexOf(brick);
-                bricks.splice(index, 1);
-            } else {
+            //top side
+            if (ball.y + ball.height / 2 === brick.y - brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
+                ball.velocity.y *= -1;
+                playSynth();
                 brick.health -= 1;
                 if (brick.health === 2) {
                     brick.r = brickColors.two.r;
@@ -1261,16 +1259,16 @@ function drawBrick() {
                     brick.g = brickColors.one.g;
                     brick.b = brickColors.one.b;
                 }
+                else if (brick.health === 0) {
+                    brick.r = 0;
+                    brick.g = 0;
+                    brick.b = 0;
+                }
             }
-        }
-        //bottom side
-        if (ball.y - ball.height / 2 === brick.y + brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
-            ball.velocity.y *= -1;
-            playSynth();
-            if (brick.health === 1) {
-                let index = bricks.indexOf(brick);
-                bricks.splice(index, 1);
-            } else {
+            //bottom side
+            if (ball.y - ball.height / 2 === brick.y + brick.height / 2 && ball.x > brick.x - brick.width / 2 && ball.x < brick.x + brick.width / 2) {
+                ball.velocity.y *= -1;
+                playSynth();
                 brick.health -= 1;
                 if (brick.health === 2) {
                     brick.r = brickColors.two.r;
@@ -1281,12 +1279,20 @@ function drawBrick() {
                     brick.r = brickColors.one.r;
                     brick.g = brickColors.one.g;
                     brick.b = brickColors.one.b;
+                }
+                else if (brick.health === 0) {
+                    brick.r = 0;
+                    brick.g = 0;
+                    brick.b = 0;
                 }
             }
         }
 
     }
+
+
 }
+
 
 function drawBall() {
     push();

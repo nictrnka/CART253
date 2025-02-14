@@ -127,6 +127,7 @@ function draw() {
     ballCollisions();
     moveBall();
     drawBall();
+
 }
 
 function drawBackground() {
@@ -174,7 +175,6 @@ function spawnGrid() {
 
 function playSynth(paddleHit) {
     userStartAudio();
-
 
     let note = random(['A4', 'B4', 'C#4', 'D#4', 'E4', 'F#4', 'G#4']);
     while (note === synth.lastNote) {
@@ -299,6 +299,7 @@ function ballCollisions() {
         }
         else if (ball.y + ball.height / 2 > paddle.y - paddle.height / 2) {
             ball.alive = false;
+            setTimeout(spawnBall, 1000);
         }
     }
 
@@ -311,9 +312,6 @@ function moveBall() {
 
 function drawBrick() {
     for (let brick of bricks) {
-
-
-
         push();
 
         fill(brick.r, brick.g, brick.b);
@@ -416,7 +414,6 @@ function drawBrick() {
 
 
 }
-
 
 function drawBall() {
     push();

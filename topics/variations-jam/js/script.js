@@ -375,11 +375,17 @@ function ballCollisions() {
 
 
         //ball & paddle collisions
-        if (ball.y + ball.height / 2 >= paddle.y - paddle.height / 2 && ball.x > paddle.x - paddle.width / 2 && ball.x < paddle.x + paddle.width / 2) {
+        if (ball.y + ball.height / 2 >= paddle.y - paddle.height / 2 && ball.x > -10 + paddle.x - paddle.width / 2 && ball.x < 10 + paddle.x + paddle.width / 2) {
             ball.velocity.y *= -1;
             playSynth(true);
 
             if (ball.velocity.x < ball.velocity.max && ball.velocity.x > -ball.velocity.max) {
+                ball.velocity.x += paddle.velocity / 2;
+            }
+            else if (ball.velocity.x >= ball.velocity.max && paddle.velocity < 0) {
+                ball.velocity.x += paddle.velocity / 2;
+            }
+            else if (ball.velocity.x <= -ball.velocity.max && paddle.velocity > 0) {
                 ball.velocity.x += paddle.velocity / 2;
             }
         }

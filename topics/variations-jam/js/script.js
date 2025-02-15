@@ -17,8 +17,8 @@ let synth = {
 let keys = {
 
     one: ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'],
-    two: ['C#4', 'D#4', 'E4', 'F#4', 'G#4', 'A4', 'B4', 'C#5'],
-    three: ['C4', 'C#4', 'D#4', "F4", 'G4', 'G#4', "A#4", "C5"]
+    two: ['D4', 'E4', 'F#4', 'G#4', 'A4', 'B4', 'C#5', 'D5'],
+    three: ['B3', 'C#4', 'D#4', "E4", 'F#4', 'G#4', "A4", "B4"]
 
 }
 
@@ -233,9 +233,9 @@ function drawMenu() {
     textAlign(CENTER);
     text('♫ brick baroque ♫', width / 2, 200);
     fill(ball.r, ball.g, ball.b);
-    text('c aeolian', menuButtons.keyOne.x, menuButtons.keyOne.y);
-    text('c# minor', menuButtons.keyTwo.x, menuButtons.keyTwo.y);
-    text('f minor', menuButtons.keyThree.x, menuButtons.keyThree.y);
+    text('c ionian', menuButtons.keyOne.x, menuButtons.keyOne.y);
+    text('d lydian', menuButtons.keyTwo.x, menuButtons.keyTwo.y);
+    text('b mixolydian', menuButtons.keyThree.x, menuButtons.keyThree.y);
     pop();
 }
 
@@ -442,13 +442,13 @@ function spawnBall() {
 
 function movePaddle() {
 
-    if (keyIsDown(65) && keyIsDown(68)) {
+    if (keyIsDown(37) && keyIsDown(39)) {
         paddle.velocity = 0;
     }
-    else if (keyIsDown(65) && paddle.x - paddle.width / 2 > 0) {
+    else if (keyIsDown(37) && paddle.x - paddle.width / 2 > 0) {
         paddle.velocity = -1;
     }
-    else if (keyIsDown(68) && paddle.x + paddle.width / 2 < width) {
+    else if (keyIsDown(39) && paddle.x + paddle.width / 2 < width) {
         paddle.velocity = 1;
     }
     else {

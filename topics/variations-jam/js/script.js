@@ -432,11 +432,19 @@ function keyPressed() {
 }
 
 function spawnBall() {
-    ball.alive = true;
-    ball.x = ball.spawn.x;
-    ball.y = ball.spawn.y;
-    ball.velocity.x = random(-1, 1.1);
-    ball.velocity.y = 1;
+    let brickHealthTotal = 0;
+
+    for (let brick of bricks) {
+        brickHealthTotal += brick.health;
+    }
+
+    if (brickHealthTotal > 0) {
+        ball.alive = true;
+        ball.x = ball.spawn.x;
+        ball.y = ball.spawn.y;
+        ball.velocity.x = random(-1, 1.1);
+        ball.velocity.y = 1;
+    }
 }
 
 function movePaddle() {

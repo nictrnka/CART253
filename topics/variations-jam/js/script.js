@@ -19,11 +19,10 @@ let keys = {
     one: ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'],
     two: ['D4', 'E4', 'F#4', 'G#4', 'A4', 'B4', 'C#5', 'D5'],
     three: ['B3', 'C#4', 'D#4', "E4", 'F#4', 'G#4', "A4", "B4"]
-
 }
 
 let menuButtons = {
-    width: 80,
+    width: 120,
     height: 25,
 
     keyOne: {
@@ -180,8 +179,6 @@ let brickColors = {
 function setup() {
     createCanvas(600, 600);
     drawBackground();
-    fillGridArray();
-
 
     polySynth = new p5.PolySynth();
 }
@@ -207,8 +204,6 @@ function draw() {
         moveBall();
         drawBall();
     }
-
-
 }
 
 function drawBackground() {
@@ -216,7 +211,6 @@ function drawBackground() {
 }
 
 function drawMenu() {
-
     push();
     fill(paddle.r, paddle.g, paddle.b);
     rectMode(CENTER);
@@ -225,7 +219,6 @@ function drawMenu() {
     rect(menuButtons.keyTwo.x, menuButtons.keyTwo.y - 5, menuButtons.width, menuButtons.height)
     rect(menuButtons.keyThree.x, menuButtons.keyThree.y - 5, menuButtons.width, menuButtons.height)
     pop();
-
 
     push();
     fill(paddle.r, paddle.g, paddle.b);
@@ -264,7 +257,6 @@ function mousePressed() {
         }
     }
 }
-
 
 function startGame() {
 
@@ -308,9 +300,23 @@ function startGame() {
         brickColors.one.b = brickColors.keyThree.one.b;
     }
 
+    resetGrid();
+    fillGridArray();
     screen = "game";
     spawnGrid();
     spawnBall();
+}
+
+function resetGrid() {
+    bricks.length = 0;
+    grid.length = 0;
+    // for (let tile of grid) {
+    //     tile.x = 40;
+    //     tile.y = 30;
+    // }
+    gridIndex = 0
+    gridX = 40
+    gridY = 30
 }
 
 function fillGridArray() {
@@ -329,10 +335,6 @@ function spawnGrid() {
 
         let brick = createBrick();
         bricks.push(brick);
-        if (brick.health === 0) {
-            let index = bricks.indexOf(brick);
-            bricks.splice(index, 1);
-        }
 
         if (gridIndex === 13 || gridIndex === 27 || gridIndex === 41 || gridIndex === 55 || gridIndex === 69 || gridIndex === 83 || gridIndex === 97 || gridIndex === 111 || gridIndex === 125 || gridIndex === 139 || gridIndex === 153 || gridIndex === 167) {
             tile.y = gridY + 20;
@@ -344,9 +346,6 @@ function spawnGrid() {
             tile.x = gridX + 40;
             gridX = tile.x;
         }
-
-        console.log(gridX);
-        console.log(gridY);
 
         gridIndex += 1;
     }
@@ -490,10 +489,10 @@ function ballCollisions() {
                 ball.velocity.x += paddle.velocity / 2;
             }
             else if (ball.velocity.x >= ball.velocity.max && paddle.velocity < 0) {
-                ball.velocity.x += paddle.velocity / 2;
+                ball.velocity.x += paddle.velocity;
             }
             else if (ball.velocity.x <= -ball.velocity.max && paddle.velocity > 0) {
-                ball.velocity.x += paddle.velocity / 2;
+                ball.velocity.x += paddle.velocity;
             }
         }
         else if (ball.y + ball.height / 2 > paddle.y - paddle.height / 2) {
@@ -501,7 +500,6 @@ function ballCollisions() {
             setTimeout(spawnBall, 500);
         }
     }
-
 }
 
 function moveBall() {
@@ -608,10 +606,7 @@ function drawBrick() {
                 }
             }
         }
-
     }
-
-
 }
 
 function drawBall() {

@@ -7,9 +7,30 @@
  */
 
 "use strict";
+
+let screen = "menu"
 let polySynth;
 let synth = {
     lastNote: 'C4',
+    key: "c major"
+}
+
+let menuButtons = {
+    width: 80,
+    height: 25,
+
+    keyOne: {
+        x: 300,
+        y: 300,
+    },
+    keyTwo: {
+        x: 300,
+        y: 340,
+    },
+    keyThree: {
+        x: 300,
+        y: 380,
+    }
 }
 
 let backGround = {
@@ -105,8 +126,7 @@ function setup() {
     createCanvas(600, 600);
     drawBackground();
     fillGridArray();
-    spawnGrid();
-    spawnBall();
+
 
     polySynth = new p5.PolySynth();
 }
@@ -115,23 +135,86 @@ function setup() {
  * OOPS I DIDN'T DESCRIBE WHAT MY DRAW DOES!
 */
 function draw() {
-    frameRate(120);
 
     drawBackground();
 
-    movePaddle();
-    drawPaddle();
+    if (screen === "menu") {
+        drawMenu();
+    }
 
-    drawBrick();
+    if (screen === "game") {
+        movePaddle();
+        drawPaddle();
 
-    ballCollisions();
-    moveBall();
-    drawBall();
+        drawBrick();
+
+        ballCollisions();
+        moveBall();
+        drawBall();
+    }
+
 
 }
 
 function drawBackground() {
     background(0);
+}
+
+function drawMenu() {
+
+    push();
+    fill(paddle.r, paddle.g, paddle.b);
+    rectMode(CENTER);
+    noStroke();
+    rect(menuButtons.keyOne.x, menuButtons.keyOne.y - 5, menuButtons.width, menuButtons.height)
+    rect(menuButtons.keyTwo.x, menuButtons.keyTwo.y - 5, menuButtons.width, menuButtons.height)
+    rect(menuButtons.keyThree.x, menuButtons.keyThree.y - 5, menuButtons.width, menuButtons.height)
+    pop();
+
+
+    push();
+    fill(paddle.r, paddle.g, paddle.b);
+    textSize(20);
+    textAlign(CENTER);
+    text('♫ brick baroque ♫', width / 2, 200);
+    fill(ball.r, ball.g, ball.b);
+    text('c major', menuButtons.keyOne.x, menuButtons.keyOne.y);
+    text('c minor', menuButtons.keyTwo.x, menuButtons.keyTwo.y);
+    text('f minor', menuButtons.keyThree.x, menuButtons.keyThree.y);
+    pop();
+}
+
+function mousePressed() {
+    if (screen === "menu") {
+        if (mouseX > menuButtons.keyOne.x - menuButtons.width / 2 &&
+            mouseX < menuButtons.keyOne.x + menuButtons.width / 2 &&
+            mouseY > -5 + menuButtons.keyOne.y - menuButtons.height / 2 &&
+            mouseY < -5 + menuButtons.keyOne.y + menuButtons.height / 2) {
+            key = "one";
+            startGame();
+        }
+        else if (mouseX > menuButtons.keyTwo.x - menuButtons.width / 2 &&
+            mouseX < menuButtons.keyTwo.x + menuButtons.width / 2 &&
+            mouseY > -5 + menuButtons.keyTwo.y - menuButtons.height / 2 &&
+            mouseY < -5 + menuButtons.keyTwo.y + menuButtons.height / 2) {
+            key = "two";
+            startGame();
+        }
+        else if (mouseX > menuButtons.keyThree.x - menuButtons.width / 2 &&
+            mouseX < menuButtons.keyThree.x + menuButtons.width / 2 &&
+            mouseY > -5 + menuButtons.keyThree.y - menuButtons.height / 2 &&
+            mouseY < -5 + menuButtons.keyThree.y + menuButtons.height / 2) {
+            key = "three";
+            startGame();
+        }
+    }
+}
+
+
+function startGame() {
+    screen = "game";
+    spawnGrid();
+    spawnBall();
 }
 
 function fillGridArray() {
@@ -232,6 +315,9 @@ function createBrick() {
     return brick;
 }
 
+
+
+
 function keyPressed() {
 
     if (key === 'r' && ball.alive === false) {
@@ -299,7 +385,7 @@ function ballCollisions() {
         }
         else if (ball.y + ball.height / 2 > paddle.y - paddle.height / 2) {
             ball.alive = false;
-            setTimeout(spawnBall, 1000);
+            setTimeout(spawnBall, 500);
         }
     }
 
